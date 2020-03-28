@@ -85,14 +85,22 @@ WSGI_APPLICATION = 'slinky.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'slinkydb_notgrubhub',
-        'USER': 'cinnamon',
-        'PASSWORD': os.environ.get('DB_PASSWORD', ""),
-        'HOST': 'slinkydb.cof5tctkml6g.us-west-1.rds.amazonaws.com',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
     }
 }
+
+# Uncomment and comment the one above during production
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'slinkydb_notgrubhub',
+#         'USER': 'cinnamon',
+#         'PASSWORD': os.environ.get('DB_PASSWORD', ""),
+#         'HOST': 'slinkydb.cof5tctkml6g.us-west-1.rds.amazonaws.com',
+#         'PORT': '5432',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
