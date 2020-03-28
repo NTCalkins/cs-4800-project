@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '5q8331y#1y_w&$6lg3c%0i6j-iv8_w-dx!ph+3^+21ncfv#8xf'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -140,12 +140,13 @@ STATIC_URL = '/static/'
 
 # Uncomment this when it's time to deploy!
 # STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+MEDIA_URL = 'static/images/'
 
-
-MEDIA_URL = '/static/images/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
+
 ]
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 
 # Redirect to home URL after login
