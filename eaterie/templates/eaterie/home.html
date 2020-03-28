@@ -1,0 +1,48 @@
+{% extends "base_template.html" %}
+
+{% block content %}
+<!-- Headlining Image -->
+<div class="card">
+  <img class="card-img" src="/static/images/headliner1.jpeg" alt="Card image">
+  <div class="card-img-overlay" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+    <p class="card-title" style="font-weight: 400; font-size: 40px; color: #0057B8; text-shadow: 2px 2px rgba(250, 250, 250, 0.431);">DELICIOUS FOOD</p>
+    <p class="card-text lead" style="color: #0057B8">delivered straight to your door!</p>
+  </div>
+</div>
+
+<!-- Circle Media Sections -->
+<section>
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <div class="p-5">
+          <img class="img-fluid rounded-circle" src="/static/images/home_food1.jpg" alt="Italian Food">
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="p-5">
+          <h2 class="display-4">From the Restaurant to Your Table</h2>
+          <p>We deliver directly from the restaurant to your location so you can find more time in the day to do the things you love! Order what you want and await your meal’s arrival.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section>
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6 order-lg-2">
+        <div class="p-5">
+          <img class="img-fluid rounded-circle" src="/static/images/home_food2.jpg" alt="Fried Chicken">
+        </div>
+      </div>
+      <div class="col-lg-6 order-lg-1">
+        <div class="p-5">
+          <h2 class="display-4">Order From Your Favorite Restaurants</h2>
+          <p>Find your favorite local restaurants and order from the same menu you would see in-person. No drives and no lines, just relax and wait for your order!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

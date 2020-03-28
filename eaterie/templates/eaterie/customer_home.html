@@ -1,0 +1,98 @@
+{% extends "base_template.html" %}
+{% load widget_tweaks %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="d-flex justify-content-center">Who delivers in your neighborhood?</h1>
+        <form action="">
+            <div class="input-group justify-content-center">
+                {% for field in form.visible_fields %}
+                    {% render_field field size="60" placeholder=field.label %}
+                {% endfor %}
+                <div class="input-group-append">
+                    <input class="btn btn-primary" type="submit" value="Find food"/>
+                </div>
+            </div>
+        </form>
+
+    </div>
+    <hr/>
+    <div class="container w-50">
+
+        {% if restaurants %}
+            {% for restautant in restaurants %}
+                <div class="list-group">
+                    <a href="{% url 'eaterie:restaurant_menu' restautant.pk %}"
+                       class="list-group-item list-group-item-action list-group-item-light">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img src="{{ restautant.image_file.url }}" height="90" width="90" alt="">
+                            </div>
+                            <div class="d-flex col-md-10 justify-content-between">
+                                <div>
+                                    <h4>{{ restautant.restaurant_name }}</h4>
+                                    Opening hour
+                                </div>
+
+                                <h5>Rating</h5>
+                                <h6>Average price</h6>
+                            </div>
+                        </div>
+
+
+                    </a>
+                </div>
+
+            {% endfor %}
+            <hr>
+            {% if is_paginated %}
+                {#                <div class="pagination justify-content-center">#}
+                {#                    <span class="page-links">#}
+                {#                        {% if page_obj.has_previous %}#}
+                {#                            <a href="?page={{ page_obj.previous_page_number }}&zip_code={{ request.GET.zip_code }}">previous</a>#}
+                {#                        {% endif %}#}
+                {#                        <span class="page-current">#}
+                {#                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}#}
+                {#                        </span>#}
+                {#                        {% if page_obj.has_next %}#}
+                {#                            <a href="?page={{ page_obj.next_page_number }}&zip_code={{ request.GET.zip_code }}">next</a>#}
+                {#                        {% endif %}#}
+                {#                    </span>#}
+                {#                </div>#}
+            {% endif %}
+            <nav>
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="?page={{ page_obj.previous_page_number }}&zip_code={{ request.GET.zip_code }}"
+                               tabindex="-1">Previous</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="?page={{ page_obj.previous_page_number }}&zip_code={{ request.GET.zip_code }}"
+                               tabindex="-1">{{ page_obj.previous_page_number }}</a>
+                        </li>
+                    {% endif %}
+                    <li class="page-item active">
+                        <a class="page-link" href="{{ page_obj.number }}">{{ page_obj.number }}<span class="sr-only">(current)</span></a>
+                    </li>
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="?page={{ page_obj.next_page_number }}&zip_code={{ request.GET.zip_code }}"
+                               tabindex="-1">{{ page_obj.next_page_number }}</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="?page={{ page_obj.next_page_number }}&zip_code={{ request.GET.zip_code }}"
+                               tabindex="-1">Next</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% else %}
+            <p class="d-flex justify-content-center">No results</p>
+        {% endif %}
+    </div>
+{% endblock %}

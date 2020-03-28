@@ -1,0 +1,120 @@
+{% extends "base_template.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card card-body">
+                <h3 style="text-align: center">Menu Update</h3>
+                {% if user.restaurant.image_file %}
+                    <img class="profile-pic" src="{{ user.restaurant.image_file.url }}" alt="">
+                {% endif %}
+                <hr>
+                <a class="btn btn-sm" href="{% url 'eaterie:restaurant_home' %}">Back to home</a>
+                <hr>
+
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="card card-body">
+                {% if form.errors %}
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <div class="alert alert-danger">
+                                <strong>{{ error|escape }}</strong>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST" action="" enctype="multipart/form-data">
+                    {% for hidden_field in form.hidden_fields %}
+                        {{ hidden_field.errors }}
+                        {{ hidden_field }}
+                    {% endfor %}
+
+                    {% csrf_token %}
+
+                    {{ form.management_form }}
+                    {{ form.non_form_errors }}
+
+                    {% for menu_category in form %}
+                        <hr>
+                        <hr>
+                        {% if menu_category.instance.id %}
+                            <h2> {{ menu_category.instance.category_name }}</h2>
+                        {% else %}
+                            {% if form|length > 1 %}
+                                <h2>Add another new category</h2>
+                            {% else %}
+                                <h2>Add a new category</h2>
+                            {% endif %}
+                        {% endif %}
+
+
+                        {% for hidden_field in menu_category.hidden_fields %}
+                            {{ hidden_field.errors }}
+                        {% endfor %}
+
+                        <table>
+                            {{ menu_category.as_table }}
+                            <hr>
+                        </table>
+                        <hr>
+                        {% if menu_category.nested %}
+                            <div class="d-flex justify-content-center">
+                                {{ menu_category.nested.management_form }}
+                                {{ menu_category.nested.non_form_errors }}
+
+                                <table>
+                                    {% for menu_item in menu_category.nested.forms %}
+
+                                        <tr>
+                                            <td></td>
+                                            <td>
+                                                <em>
+                                                    {% if menu_item.instance.id %}
+                                                        <p>{{ menu_item.instance.item_name }}</p>
+                                                    {% else %}
+                                                        <p>Add a new item</p>
+                                                    {% endif %}
+                                                </em>
+                                                {% for hidden_field in menu_item.hidden_fields %}
+                                                    {{ hidden_field.errors }}
+                                                {% endfor %}
+
+                                                <table>
+                                                    {{ menu_item.as_table }}
+                                                </table>
+                                                <hr>
+                                            </td>
+                                            <td>
+                                                {% if menu_item.instance.image_file %}
+                                                    <img src="{{ menu_item.instance.image_file.url }}" height="150"
+                                                         width="130" alt="">
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                        {% endif %}
+
+                    {% endfor %}
+
+                    <hr>
+
+                    <p>
+                        <input class="btn btn-primary" type="submit" value="Update menu">
+                        &nbsp; &nbsp;
+                        <a href="{% url 'eaterie:restaurant_home' %}">Cancel</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

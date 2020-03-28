@@ -1,0 +1,8 @@
+.menu-image {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.card:hover {
+	border: 2px #bfbfbf solid;
+  }
