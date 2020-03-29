@@ -1,0 +1,100 @@
+{% load static %}
+<nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+    {% if user.is_authenticated %}
+        {% if user.is_customer %}
+            <a href="{% url 'eaterie:customer_home' %}">
+		    <img src="/static/media/navbar_logo1.png">
+            </a>
+        {% endif %}
+        {% if user.is_restaurant %}
+		<a href="{% url 'eaterie:restaurant_home' %}">
+		    <img src="/static/media/navbar_logo1.png">
+            </a>
+        {% endif %}
+    {% else %}
+		<a href="{% url 'eaterie:home' %}">
+		    <img src="/static/media/navbar_logo1.png">
+            </a>
+    {% endif %}
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+        <ul class="navbar-nav">
+
+            {% if user.is_authenticated %}
+                <li class="nav-item dropdown">
+                    {% if request.user.is_customer %}
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                           data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false">
+                            Hello, {{ user.first_name }}!
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{% url 'eaterie:update_account' user.pk %}">Account</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                        </div>
+
+                    {% endif %}
+
+                    {% if user.is_restaurant %}
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                           data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false">
+                            Welcome, {{ user.first_name }}!
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{% url 'eaterie:update_account' user.pk %}">Account</a>
+                            <a class="dropdown-item" href="{% url 'eaterie:update_menu' user.restaurant.pk %}">Update Menu</a>
+                            <a class="dropdown-item" href="{% url 'eaterie:restaurant_menu' user.restaurant.pk %}">Restaurant Menu</a>
+                        </div>
+                    {% endif %}
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'account_logout' %}">Sign out</a>
+                </li>
+            {% else %}
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'account_login' %}">Sign in <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                <!-- Trigger the sign up modal -->
+				<a class="nav-link" href="#" data-toggle="modal" data-target="#userTypeQ-signup">Sign Up</a>
+			    </li>
+            {% endif %}
+
+        </ul>
+    </div>
+</nav>
+
+<!-- Sign Up Modal -->
+<div class="modal fade" id="userTypeQ-signup" tabindex="-1" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+                		<h5 class="modal-title" id="SignUpLabel">Sign Up</h5>
+            		</div>
+            		<div class="modal-body">
+				<center>
+				<a href="{% url 'eaterie:restaurant_signup' %}" button type="button" class="btn-restaurant-customer">As a Restaurant</a>
+				</center>  
+                		<p>
+				<center>Are you signing up as a restaurant?</center>
+				<br>Making an account this way will allow the user to upload information about a new restaurant location for our service.
+                		</p>
+				<center>
+				<a href="{% url 'eaterie:customer_signup' %}" button type="button" class="btn-restaurant-customer">As a Customer</a>
+				</center>
+				<p>
+				<center>Are you signing up as an individual?</center>
+				<br>Making an account this way will allow the user to order from restaurants in their area.
+                		</p>
+            		</div>
+            		<div class="modal-footer">
+                    		<button type="button" class="btn-closemodal" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>

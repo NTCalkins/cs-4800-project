@@ -1,0 +1,77 @@
+{% extends "base_template.html" %}
+
+
+{% block content %}
+    {% if user.restaurant.image_file %}
+        <img src="{{ user.restaurant.image_file.url }}" height="170" alt="">
+    {% endif %}
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card card-body">
+                <h3 style="text-align: center">Account Settings</h3>
+                {% if user.is_customer %}
+                    {% if user.customer.avatar %}
+                        <img class="profile-pic" src="{{ user.customer.avatar.url }}" alt="">
+                    {% endif %}
+                    <hr>
+                    <a class="btn btn-sm" href="{% url 'eaterie:customer_home' %}">Back to home</a>
+                {% endif %}
+                {% if user.is_restaurant %}
+                    <hr>
+                    <a class="btn btn-sm" href="{% url 'eaterie:restaurant_home' %}">Back to dashboard</a>
+                    <hr>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="card card-body">
+                {% if form.errors %}
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <div class="alert alert-danger">
+                                <strong>{{ error|escape }}</strong>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <form method="POST" action="" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <h1>Account</h1>
+
+                    {% for field in form.user_account %}
+                        <p>
+                            {{ field.label_tag }}<br>
+                            {{ field }}
+                        </p>
+                    {% endfor %}
+                    <hr>
+                    <h1>Profile</h1>
+                    {% if user.is_customer %}
+                        {% for field in form.customer_profile %}
+                            <p>
+                                {{ field.label_tag }}<br>
+                                {{ field }}
+                            </p>
+                        {% endfor %}
+                    {% elif request.user.is_restaurant %}
+                        {% for field in form.restaurant_profile %}
+                            <p>
+                                {{ field.label_tag }}<br>
+                                {{ field }}
+                            </p>
+                        {% endfor %}
+                    {% endif %}
+
+
+                    <input class="btn btn-primary" type="submit" value="Update">
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
