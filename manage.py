@@ -5,11 +5,11 @@ import sys
 
 
 def main():
-    # switch settings for development and production: choose one DJANGO_SETTINGS_MODULE from below to run
-    # Additional work for Pycharm settings: Files->Settings->Language&Frameworks->Django -> change 'Settings'
-    # location to slinky/settings/development.py or slinky/settings/production.py
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'slinky.settings.development')
-    # os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'slinky.settings.production')
+    """Switch settings for development and production: choose one DJANGO_SETTINGS_MODULE from below to run.
+    Additional work for Pycharm settings: Files->Settings->Language&Frameworks->Django -> change 'Settings'
+    location to slinky/settings/development.py or slinky/settings/production.py"""
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'slinky.settings.development')   #<- development
+    # os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'slinky.settings.production') #<- production
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

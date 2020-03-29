@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from decouple import config
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -19,8 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '5q8331y#1y_w&$6lg3c%0i6j-iv8_w-dx!ph+3^+21ncfv#8xf'
-
+SECRET_KEY = config('SECRET_KEY')
 
 # Application definition
 
@@ -30,7 +30,6 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-
     # The following apps are required for allauth:
     'django.contrib.sites',
 
@@ -128,8 +127,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
-
 
 ############################################################################
 

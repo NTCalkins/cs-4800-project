@@ -1,18 +1,19 @@
 from .base_settings import *
+from decouple import config
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = config('DEBUG', cast=bool)
 
 ALLOWED_HOSTS = ['*']
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'slinkydb_notgrubhub',
-        'USER': 'cinnamon',
-        'PASSWORD': os.environ.get('DB_PASSWORD', ""),
-        'HOST': 'slinkydb.cof5tctkml6g.us-west-1.rds.amazonaws.com',
-        'PORT': '5432',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT'),
     }
 }
 

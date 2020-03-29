@@ -6,12 +6,13 @@ DEBUG = True
 ALLOWED_HOSTS = ['127.0.0.1']
 
 MIDDLEWARE = [
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-] + MIDDLEWARE
+                 'debug_toolbar.middleware.DebugToolbarMiddleware',
+                 # middleware for debug toolbar, should be set at top
+             ] + MIDDLEWARE
 
 INSTALLED_APPS += [
-    'django.contrib.staticfiles', # serving static files for development
-    'debug_toolbar', # debug toolbar for development
+    'django.contrib.staticfiles',  # serving static files for development
+    'debug_toolbar',  # debug toolbar for development
 ]
 
 DATABASES = {
@@ -59,8 +60,10 @@ DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.profiling.ProfilingPanel',
 ]
 
+
 def show_toolbar(request):
     return True
+
 
 DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECT': False,
