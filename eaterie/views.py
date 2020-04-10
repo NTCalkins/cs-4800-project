@@ -1,14 +1,18 @@
 from allauth.account.views import SignupView
 from django import forms
+from django.contrib.auth.decorators import login_required
 from django.forms import inlineformset_factory
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView, UpdateView, DetailView, ListView
 from nested_formset import nestedformset_factory
 
-from eaterie.forms import CustomerSignUpForm, RestaurantSignUpForm, CustomerUpdateForm, RestaurantUpdateForm, \
-    RestaurantSearchForm
-from eaterie.models import Restaurant, CustomUserModel, MenuCategory, MenuItem
+from eaterie.decorators import (customer_required, restaurant_required, user_identity_check,
+                                restaurant_owner_identity_check)
+from eaterie.forms import (CustomerSignUpForm, RestaurantSignUpForm, CustomerUpdateForm, RestaurantUpdateForm,
+                           RestaurantSearchForm)
+from eaterie.models import Restaurant, CustomUserModel, MenuCategory, MenuItem, Customer
 
 
 def login_redirect(request):
@@ -25,25 +29,32 @@ class HomePageView(TemplateView):
     template_name = 'eaterie/home.html'
 
 
+@method_decorator(customer_required, name='dispatch')
 class CustomerHomeView(ListView):
     model = Restaurant
     form_class = RestaurantSearchForm
     template_name = 'eaterie/customer_home.html'
     context_object_name = 'restaurants'
-    paginate_by = 1
+    paginate_by = 10
 
     def get_context_data(self, **kwargs):
         context = super(CustomerHomeView, self).get_context_data(**kwargs)
-        context['form'] = RestaurantSearchForm
+        customer = Customer.objects.get(user=self.request.user)
+        initial = {'zip_code': customer.zip_code}
+        context['form'] = RestaurantSearchForm(initial=initial)
         return context
 
     def get_queryset(self):
         form = self.form_class(self.request.GET)
+        customer = Customer.objects.get(user=self.request.user)
         if form.is_valid():
             return Restaurant.objects.filter(zip_code__zip_code=form.cleaned_data['zip_code'])
+        elif customer.zip_code:
+            return Restaurant.objects.filter(zip_code__zip_code=customer.zip_code)
         return Restaurant.objects.none()
 
 
+@method_decorator(restaurant_required, name='dispatch')
 class RestaurantHomeView(TemplateView):
     model = Restaurant
     template_name = 'eaterie/restaurant_home.html'
@@ -61,6 +72,8 @@ class RestaurantSignUpView(SignupView):
     template_name = 'eaterie/restaurant_signup.html'
 
 
+@method_decorator(user_identity_check, name='dispatch')
+@method_decorator(login_required, name='dispatch')
 class AccountUpdateView(UpdateView):
     model = CustomUserModel
     template_name = 'eaterie/account_update.html'
@@ -89,6 +102,7 @@ class AccountUpdateView(UpdateView):
         return reverse('eaterie:update_account', args=[str(self.request.user.id)])
 
 
+@method_decorator(login_required, name='dispatch')
 class MenuView(DetailView):
     model = Restaurant
     template_name = 'eaterie/restaurant_menu.html'
@@ -98,6 +112,8 @@ class MenuView(DetailView):
         return reverse('eaterie:menu', args=[str(restaurant.id)])
 
 
+@method_decorator(restaurant_owner_identity_check, name='dispatch')
+@method_decorator(restaurant_required, name='dispatch')
 class MenuUpdateView(UpdateView):
     model = Restaurant
     exclude = ['user', 'zip_code']

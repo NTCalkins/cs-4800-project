@@ -1,9 +1,8 @@
 {% extends "base_template.html" %}
 
-
 {% block content %}
     {% if user.restaurant.image_file %}
-        <img src="{{ user.restaurant.image_file.url }}" height="170" alt="">
+        <img src="{{ user.restaurant.image_file.url }}" height="170" width="100%" alt="">
     {% endif %}
     <div class="row">
         <div class="col-md-3">

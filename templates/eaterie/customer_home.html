@@ -17,81 +17,143 @@
 
     </div>
     <hr/>
-    <div class="container w-50">
+    <div class="container w-75">
 
         {% if restaurants %}
-            {% for restautant in restaurants %}
-                <div class="list-group">
-                    <a href="{% url 'eaterie:restaurant_menu' restautant.pk %}"
-                       class="list-group-item list-group-item-action list-group-item-light">
-                        <div class="row">
-                            <div class="col-md-2">
-                                <img src="{{ restautant.image_file.url }}" height="90" width="90" alt="">
+            {% if request.GET.zip_code %}
+                {% for restautant in restaurants %}
+                    <div class="list-group">
+                        <a href="{% url 'eaterie:restaurant_menu' restautant.pk %}"
+                           class="list-group-item list-group-item-action list-group-item-light">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <img src="{{ restautant.image_file.url }}" height="90" width="90" alt="">
+                                </div>
+                                <div class="d-flex col-md-10 justify-content-between">
+                                    <div>
+                                        <h4>{{ restautant.restaurant_name }}</h4>
+                                        Opening hour
+                                    </div>
+
+                                    <h5>Rating</h5>
+                                    <h6>Average price</h6>
+                                </div>
                             </div>
-                            <div class="d-flex col-md-10 justify-content-between">
-                                <div>
-                                    <h4>{{ restautant.restaurant_name }}</h4>
-                                    Opening hour
+
+
+                        </a>
+                    </div>
+
+                {% endfor %}
+                <hr>
+                {% if is_paginated %}
+                {% endif %}
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link"
+                                   href="?page={{ page_obj.previous_page_number }}&zip_code={{ request.GET.zip_code }}"><i
+                                        class="fa fa-chevron-left"></i>
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <a class="page-link" href="" tabindex="-1"><i class="fa fa-chevron-left"></i></a>
+                            </li>
+                        {% endif %}
+
+                        {% if page_obj.number|add:'-4' > 1 %}
+                            <li class="page-item">
+                                <a class="page-link"
+                                   href="?page={{ page_obj.number|add:'-5' }}&zip_code={{ request.GET.zip_code }}">&hellip;
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% for num in paginator.page_range %}
+                            {% if page_obj.number == num %}
+                                <li class="page-item active">
+                                    <a class="page-link" href="">{{ num }}</a>
+                                </li>
+                            {% elif num > page_obj.number|add:'-5' and num < page_obj.number|add:'5' %}
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="?page={{ num }}&zip_code={{ request.GET.zip_code }}">{{ num }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if paginator.num_pages > page_obj.number|add:'4' %}
+                            <li class="page-item">
+                                <a class="page-link"
+                                   href="?page={{ page_obj.number|add:'5' }}&zip_code={{ request.GET.zip_code }}">&hellip;
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link"
+                                   href="?page={{ page_obj.next_page_number }}&zip_code={{ request.GET.zip_code }}"><i
+                                        class="fa fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <a class="page-link" href="" tabindex="-1"><i class="fa fa-chevron-right"></i></a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+
+            {% else %}
+                <!--Suggestion: Restaurant near you-->
+                <div class="row">
+                    <div class="col-sm-3">
+                        <a href="?zip_code={{ request.user.customer.zip_code }}">
+                            <div class="card">
+                                <img src="/static/media/restaurant_near_you.jpg" alt="">
+                                <div class="carousel-caption d-none d-lg-block">
+                                    <div class="bg-dark">
+                                        <h4>Most popular near you</h4>
+                                        <div>See all</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-sm-9">
+                        <div class="row">
+                            {% for restautant in restaurants|slice:":6" %}
+
+                                <div class="col-sm-4">
+                                    <a href="{% url 'eaterie:restaurant_menu' restautant.pk %}"
+                                       class="list-group-item list-group-item-action list-group-item-light">
+                                        <div>
+                                            <img src="{{ restautant.image_file.url }}" height="120" width="100%" alt="">
+                                        </div>
+
+                                        <div>
+                                            <h4>{{ restautant.restaurant_name }}</h4>
+                                            Opening hour
+                                        </div>
+
+                                        <h5>Rating</h5>
+                                        <h6>Average price</h6>
+
+                                    </a>
+
                                 </div>
 
-                                <h5>Rating</h5>
-                                <h6>Average price</h6>
-                            </div>
+                            {% endfor %}
                         </div>
-
-
-                    </a>
+                    </div>
                 </div>
-
-            {% endfor %}
-            <hr>
-            {% if is_paginated %}
-                {#                <div class="pagination justify-content-center">#}
-                {#                    <span class="page-links">#}
-                {#                        {% if page_obj.has_previous %}#}
-                {#                            <a href="?page={{ page_obj.previous_page_number }}&zip_code={{ request.GET.zip_code }}">previous</a>#}
-                {#                        {% endif %}#}
-                {#                        <span class="page-current">#}
-                {#                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}#}
-                {#                        </span>#}
-                {#                        {% if page_obj.has_next %}#}
-                {#                            <a href="?page={{ page_obj.next_page_number }}&zip_code={{ request.GET.zip_code }}">next</a>#}
-                {#                        {% endif %}#}
-                {#                    </span>#}
-                {#                </div>#}
             {% endif %}
-            <nav>
-                <ul class="pagination justify-content-center">
-                    {% if page_obj.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link"
-                               href="?page={{ page_obj.previous_page_number }}&zip_code={{ request.GET.zip_code }}"
-                               tabindex="-1">Previous</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link"
-                               href="?page={{ page_obj.previous_page_number }}&zip_code={{ request.GET.zip_code }}"
-                               tabindex="-1">{{ page_obj.previous_page_number }}</a>
-                        </li>
-                    {% endif %}
-                    <li class="page-item active">
-                        <a class="page-link" href="{{ page_obj.number }}">{{ page_obj.number }}<span class="sr-only">(current)</span></a>
-                    </li>
-                    {% if page_obj.has_next %}
-                        <li class="page-item">
-                            <a class="page-link"
-                               href="?page={{ page_obj.next_page_number }}&zip_code={{ request.GET.zip_code }}"
-                               tabindex="-1">{{ page_obj.next_page_number }}</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link"
-                               href="?page={{ page_obj.next_page_number }}&zip_code={{ request.GET.zip_code }}"
-                               tabindex="-1">Next</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </nav>
-        {% else %}
+
+        {% elif request.GET.zip_code %}
             <p class="d-flex justify-content-center">No results</p>
         {% endif %}
     </div>

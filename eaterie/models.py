@@ -108,6 +108,7 @@ class Customer(models.Model):
     ]
     preference_1 = models.CharField(max_length=64, choices=PREFERENCE_CHOICES, default='ITA')
     preference_2 = models.CharField(max_length=64, choices=PREFERENCE_CHOICES, default='VTN')
+    zip_code = models.CharField(max_length=5, blank=True)
 
     def __str__(self):
         return self.user.email
