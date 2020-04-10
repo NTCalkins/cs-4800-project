@@ -94,6 +94,20 @@ class Restaurant(models.Model):
     def __str__(self):
         return self.restaurant_name
 
+    def get_average_price(self):
+        categories = MenuCategory.objects.filter(restaurant=self)
+        total_price = 0
+        total_items = 0
+        for c in categories:
+            food_items = MenuItem.objects.filter(category=c).values()
+            for f in food_items:
+                total_price += f["price"]
+                total_items += 1
+                print(f)
+        if total_items == 0:
+            return 0
+        else:
+            return total_price/total_items
 
 class Customer(models.Model):
     customer_address = models.CharField(max_length=256, blank=True)
@@ -137,6 +151,10 @@ class MenuItem(models.Model):
 
     def __str__(self):
         return self.item_name
+
+class Order(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+
 
 # class Driver(models.Model):
 #     phone_number = models.CharField(max_length=10)
