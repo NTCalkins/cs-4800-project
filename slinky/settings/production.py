@@ -4,7 +4,7 @@ from secret import *
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = config('DEBUG', cast=bool)
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 DATABASES = {
