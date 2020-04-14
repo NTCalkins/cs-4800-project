@@ -125,11 +125,15 @@ class Customer(models.Model):
     ]
     preference_1 = models.CharField(max_length=64, choices=PREFERENCE_CHOICES, default='ITA')
     preference_2 = models.CharField(max_length=64, choices=PREFERENCE_CHOICES, default='VTN')
-    cart = models.OneToOneField("Cart", on_delete=models.CASCADE)
     zip_code = models.CharField(max_length=5, blank=True)
 
     def __str__(self):
         return self.user.email
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        user_cart = Cart.objects.create()
+
 
 
 class MenuCategory(models.Model):
@@ -188,14 +192,28 @@ class CartEntry(models.Model):
     menu_item = models.ForeignKey(MenuItem, null=True, on_delete='CASCADE')
     quantity = models.PositiveIntegerField()
 
+    def get_price(self):
+        return self.menu_item.price * self.quantity
+
 
 class Cart(models.Model):
     """
     The Cart model that will hold CartEntrys related to a user's unique cart.
     """
-    user = models.ForeignKey('CustomUserManager', on_delete=models.CASCADE)  # gives each customer has their unique cart
+    user = models.OneToOneField(
+        Customer,
+        on_delete=models.CASCADE,
+        primary_key=True
+    )  # gives each customer has their unique cart
     menu_items = models.ManyToManyField(MenuItem, blank=True)
     total_cost = models.DecimalField(default=0.00, max_digits=10, decimal_places=2)
+
+    def calculate_total_cost(self):
+        cart_entries = CartEntry.objects.filter(cart=self)
+        sum = 0
+        for entry in cart_entries:
+            sum += CartEntry.get_price(entry)
+        return sum
 
     def add_cart_item(self, menu_item_id, amount):
         """
@@ -206,7 +224,7 @@ class Cart(models.Model):
             item = MenuItem.objects.get(pk=menu_item_id)  # will access the MenuItem that user is trying to add to cart
             try:  # if the cart entry already exists, just increment that item's quantity
                 item_exists = CartEntry.objects.get(cart=self, menu_item=item)
-                item_exists.quantity += 1
+                item_exists.quantity += amount
                 item.exists.save()
             except CartEntry.DoesNotExist:  # create a new cart entry with this item
                 new_entry = CartEntry.objects.create(cart=self, menu_item=item, quantity=1)
