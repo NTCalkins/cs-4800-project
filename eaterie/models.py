@@ -132,7 +132,10 @@ class Customer(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        user_cart = Cart.objects.create()
+        user_cart, created = Cart.objects.get_or_create(customer=self)
+        if not created:
+            user_cart.save()
+
 
 
 
@@ -200,7 +203,7 @@ class Cart(models.Model):
     """
     The Cart model that will hold CartEntrys related to a user's unique cart.
     """
-    user = models.OneToOneField(
+    customer = models.OneToOneField(
         Customer,
         on_delete=models.CASCADE,
         primary_key=True
