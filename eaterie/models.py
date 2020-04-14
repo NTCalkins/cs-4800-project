@@ -1,7 +1,9 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from datetime import datetime
 
 
 # Create your models here.
@@ -107,7 +109,8 @@ class Restaurant(models.Model):
         if total_items == 0:
             return 0
         else:
-            return total_price/total_items
+            return total_price / total_items
+
 
 class Customer(models.Model):
     customer_address = models.CharField(max_length=256, blank=True)
@@ -122,6 +125,7 @@ class Customer(models.Model):
     ]
     preference_1 = models.CharField(max_length=64, choices=PREFERENCE_CHOICES, default='ITA')
     preference_2 = models.CharField(max_length=64, choices=PREFERENCE_CHOICES, default='VTN')
+    cart = models.OneToOneField("Cart", on_delete=models.CASCADE)
     zip_code = models.CharField(max_length=5, blank=True)
 
     def __str__(self):
@@ -152,14 +156,93 @@ class MenuItem(models.Model):
     def __str__(self):
         return self.item_name
 
+
 class Order(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    order_date = models.DateTimeField(auto_now_add=True)
+    special_instruction = models.CharField(max_length=512, blank=True)
+    order_fulfilled = models.BooleanField(default=False)
+    order_cancelled = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.customer.user.email + " order made at: " + str(self.order_date)
 
 
-# class Driver(models.Model):
-#     phone_number = models.CharField(max_length=10)
-#     zip_code = models.ForeignKey(ZipCode, on_delete=models.SET_NULL, blank=True, null=True)
-#     user = models.OneToOneField(CustomUserModel, on_delete=models.CASCADE)
-#
-#     def __str__(self):
-#         return self.user.email
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE())
+    menu_item = models.ForeignKey(MenuItem, on_delete=models.SET_DEFAULT, default=None)
+    quantity = models.IntegerField()
+
+    class Meta:
+        unique_together = ('order', 'menu_item')
+
+    def __str__(self):
+        return str(self.quantity) + " " + self.menu_item.item_name
+
+
+class CartEntry(models.Model):
+    """
+    Cart entry that is linked to a specific user's cart (ForeignKey cart).
+    """
+    cart = models.ForeignKey("Cart", null=True, on_delete='CASCADE')
+    menu_item = models.ForeignKey(MenuItem, null=True, on_delete='CASCADE')
+    quantity = models.PositiveIntegerField()
+
+
+class Cart(models.Model):
+    """
+    The Cart model that will hold CartEntrys related to a user's unique cart.
+    """
+    user = models.ForeignKey('CustomUserManager', on_delete=models.CASCADE)  # gives each customer has their unique cart
+    menu_items = models.ManyToManyField(MenuItem, blank=True)
+    total_cost = models.DecimalField(default=0.00, max_digits=10, decimal_places=2)
+
+    def add_cart_item(self, menu_item_id, amount):
+        """
+        Adds a menu item to a user's cart.
+        """
+
+        try:
+            item = MenuItem.objects.get(pk=menu_item_id)  # will access the MenuItem that user is trying to add to cart
+            try:  # if the cart entry already exists, just increment that item's quantity
+                item_exists = CartEntry.objects.get(cart=self, menu_item=item)
+                item_exists.quantity += 1
+                item.exists.save()
+            except CartEntry.DoesNotExist:  # create a new cart entry with this item
+                new_entry = CartEntry.objects.create(cart=self, menu_item=item, quantity=1)
+                new_entry.save()
+        except ObjectDoesNotExist:  # checks that the item is reachable
+            pass
+
+    def remove_cart_item(self, menu_item_id):
+        """
+        Removes a menu item from a user's cart.
+        """
+
+        try:
+            item = MenuItem.objects.get(pk=menu_item_id)  # will access the MenuItem that user is trying to add to cart
+            try:  # if the cart entry already exists, just decrement that item's quantity
+                item_exists = CartEntry.objects.get(cart=self, menu_item=item)
+                item_exists.quantity -= 1
+                item_exists.save()
+                if item_exists.quantity == 0:  # if the quantity is 0, delete CartEntry
+                    item_exists.delete()
+            except CartEntry.DoesNotExist:  # this shouldn't be encountered, but if so
+                pass
+        except ObjectDoesNotExist:  # checks that the item is reachable
+            pass
+
+    def checkout(self):
+        """
+        Creates an Order from the CartEntrys in the user's cart.
+        """
+
+        self.order_date = datetime.now()
+        new_order = Order.objects.create(customer=self.customer, order_date=self.order_date)
+        new_order.save()
+        cart_entries = CartEntry.objects.filter(cart=self)
+        # Populate the new order with its order items, and destroy all the cart items so it can be used again
+        for cart_entry in cart_entries:
+            new_order_item = OrderItem.objects.create(order=new_order, quantity=cart_entry.quantity,
+                                                      menu_item=cart_entry.menu_item)
+            cart_entry.delete()
