@@ -62,9 +62,10 @@
                                             <div class="menu-image">
                                                 <img src="{{ menu_item.image_file.url }}" height="100"
                                                      alt="">
-
-                                        </div>
+                                            </div>
                                     </div>
+                                        <button type="button" data-toggle="modal" data-target="#userTypeQ-signu" >Order Here</button>
+
                                 </div>
                             </div>
                         {% endfor %}
@@ -74,6 +75,37 @@
         </div>
     </div>
 
+    <!-- Sign Up Modal -->
+<div class="modal fade" id="userTypeQ-signu" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="SignUpLabel">Sign Up</h5>
+            </div>
+            <div class="modal-body">
+                <center>
+                    <a href="{% url 'eaterie:restaurant_signup' %}" button type="button"
+                       class="btn-restaurant-customer">"{{ menu_item.item_name }}"</a>
+                </center>
+                <p>
+                <center>{{ menu_item.item_name }}</center>
+                <br>{{ menu_item.item_name }}
+                </p>
+                <center>
+                    <a href="{% url 'eaterie:customer_signup' %}" button type="button" class="btn-restaurant-customer">As
+                        a Customer</a>
+                </center>
+                <p>
+                <center>Are you signing up as an individual?</center>
+                <br>Making an account this way will allow the user to order from restaurants in their area.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-closemodal" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 {% endblock %}
