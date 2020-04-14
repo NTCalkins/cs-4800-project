@@ -12,7 +12,7 @@ from eaterie.decorators import (customer_required, restaurant_required, user_ide
                                 restaurant_owner_identity_check)
 from eaterie.forms import (CustomerSignUpForm, RestaurantSignUpForm, CustomerUpdateForm, RestaurantUpdateForm,
                            RestaurantSearchForm)
-from eaterie.models import Restaurant, CustomUserModel, MenuCategory, MenuItem, Customer
+from eaterie.models import Restaurant, CustomUserModel, MenuCategory, MenuItem, Customer, Cart
 
 
 def login_redirect(request):
@@ -136,3 +136,9 @@ class MenuUpdateView(UpdateView):
     def get_success_url(self):
         restaurant = Restaurant.objects.get(user=self.request.user)
         return reverse('eaterie:update_menu', args=[str(restaurant.id)])
+
+
+@method_decorator(customer_required, name='dispatch')
+class CartView(DetailView):
+    model = Cart
+    template_name = 'eaterie/cart_view.html'

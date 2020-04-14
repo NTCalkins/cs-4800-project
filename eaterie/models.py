@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.utils.timezone import now as django_now
 from datetime import datetime
 
 
@@ -137,8 +138,6 @@ class Customer(models.Model):
             user_cart.save()
 
 
-
-
 class MenuCategory(models.Model):
     category_name = models.CharField(max_length=60)
     restaurant = models.ForeignKey('Restaurant', on_delete=models.CASCADE)
@@ -166,7 +165,7 @@ class MenuItem(models.Model):
 
 class Order(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    order_date = models.DateTimeField(auto_now_add=True)
+    order_date = models.DateTimeField(default=django_now)
     special_instruction = models.CharField(max_length=512, blank=True)
     order_fulfilled = models.BooleanField(default=False)
     order_cancelled = models.BooleanField(default=False)
@@ -176,7 +175,7 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE())
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
     menu_item = models.ForeignKey(MenuItem, on_delete=models.SET_DEFAULT, default=None)
     quantity = models.IntegerField()
 

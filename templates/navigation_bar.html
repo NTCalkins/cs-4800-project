@@ -52,6 +52,10 @@
                     {% endif %}
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="{% url 'eaterie:cart_view' user.customer.pk %}">Cart</a>
+                </li>
+
+                <li class="nav-item">
                     <a class="nav-link" href="{% url 'account_logout' %}">Sign out</a>
                 </li>
             {% else %}
