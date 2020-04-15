@@ -2,7 +2,8 @@ from allauth.account.views import SignupView
 from django import forms
 from django.contrib.auth.decorators import login_required
 from django.forms import inlineformset_factory
-from django.shortcuts import redirect
+from django.http import HttpResponseRedirect
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView, UpdateView, DetailView, ListView
@@ -12,7 +13,7 @@ from eaterie.decorators import (customer_required, restaurant_required, user_ide
                                 restaurant_owner_identity_check)
 from eaterie.forms import (CustomerSignUpForm, RestaurantSignUpForm, CustomerUpdateForm, RestaurantUpdateForm,
                            RestaurantSearchForm)
-from eaterie.models import Restaurant, CustomUserModel, MenuCategory, MenuItem, Customer, Cart
+from eaterie.models import Restaurant, CustomUserModel, MenuCategory, MenuItem, Customer, Cart, CartEntry
 
 
 def login_redirect(request):
@@ -102,6 +103,9 @@ class AccountUpdateView(UpdateView):
         return reverse('eaterie:update_account', args=[str(self.request.user.id)])
 
 
+
+
+
 @method_decorator(login_required, name='dispatch')
 class MenuView(DetailView):
     model = Restaurant
@@ -110,6 +114,20 @@ class MenuView(DetailView):
     def get_success_url(self):
         restaurant = Restaurant.objects.get(user=self.request.user)
         return reverse('eaterie:menu', args=[str(restaurant.id)])
+
+    def post(self, request, *args, **kwargs):
+        if request.POST['add_to_cart_button'] == "Submit":
+            menu_item_pk = request.POST['mipk']
+            item_amount = request.POST['item_amount']
+            user_pk = kwargs['pk']
+            menu_item = MenuItem.objects.get(pk=menu_item_pk)
+            quantity = int(item_amount)
+            user = CustomUserModel.objects.get(pk=user_pk)
+            customer = Customer.objects.get(user=user)
+            cart = Cart.objects.get(customer=customer)
+            cart_entry = CartEntry(cart=cart, menu_item=menu_item, quantity=quantity)
+            cart_entry.save()
+        return HttpResponseRedirect(request.path_info)
 
 
 @method_decorator(restaurant_owner_identity_check, name='dispatch')
@@ -142,3 +160,6 @@ class MenuUpdateView(UpdateView):
 class CartView(DetailView):
     model = Cart
     template_name = 'eaterie/cart_view.html'
+
+
+

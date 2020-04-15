@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'bootstrap_modal_forms',
     # The following apps are required for allauth:
     'django.contrib.sites',
 

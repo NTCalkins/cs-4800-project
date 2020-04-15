@@ -15,8 +15,10 @@
         <li class="list-group-item">
             <div class="container">
                 <h1>{{ restaurant.restaurant_name }}</h1>
-                <p>{{ restaurant.restaurant_address }} </p>
-                <p>{{ restaurant.phone_number }}</p>
+                {% if restaurant.restaurant_address %}
+                <p>Address: {{ restaurant.restaurant_address }} </p>
+                {% endif %}
+                <p>Phone number: {{ restaurant.phone_number }}</p>
             </div>
         </li>
         <li class="list-group-item">
@@ -64,48 +66,48 @@
                                                      alt="">
                                             </div>
                                     </div>
-                                        <button type="button" data-toggle="modal" data-target="#userTypeQ-signu" >Order Here</button>
+                                        <!-- TODO: Restrict to only customer -->
+                                        <button type="button" data-toggle="modal" data-target="#modal-item-{{ menu_item.pk }}" >Order Here</button>
 
+                                            <!-- Add to cart modal -->
+                                        <div class="modal fade" id="modal-item-{{ menu_item.pk }}" name="{{ menu_item.item_name }}" tabindex="-1" role="dialog">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="add_to_cart_title">Add to Cart</h5>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="container">
+                                                            <div class="divL">
+                                                                <p> How many {{ menu_item.item_name }}(s) would you like? </p>
+                                                            </div>
+                                                            <div class="divR">
+                                                                <form method="POST">
+                                                                    {% csrf_token %}
+                                                                    <input hidden type="text" name="mipk" value="{{ menu_item.pk }}" readonly>
+                                                                <label for="item_amount"> {{ menu_item.item_name }} quantity:</label><br>
+                                                                    <input type="number" default="1" min="1" step="1" name="item_amount"/>
+                                                                    <input type="submit" class="btn btn-primary" value="Submit" name="add_to_cart_button"/>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn-closemodal" data-dismiss="modal">Close</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        {% endfor %}
+                            {% endfor %}
+                        </div>
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
         </div>
-    </div>
 
-    <!-- Sign Up Modal -->
-<div class="modal fade" id="userTypeQ-signu" tabindex="-1" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="SignUpLabel">Sign Up</h5>
-            </div>
-            <div class="modal-body">
-                <center>
-                    <a href="{% url 'eaterie:restaurant_signup' %}" button type="button"
-                       class="btn-restaurant-customer">"{{ menu_item.item_name }}"</a>
-                </center>
-                <p>
-                <center>{{ menu_item.item_name }}</center>
-                <br>{{ menu_item.item_name }}
-                </p>
-                <center>
-                    <a href="{% url 'eaterie:customer_signup' %}" button type="button" class="btn-restaurant-customer">As
-                        a Customer</a>
-                </center>
-                <p>
-                <center>Are you signing up as an individual?</center>
-                <br>Making an account this way will allow the user to order from restaurants in their area.
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-closemodal" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 
 {% endblock %}

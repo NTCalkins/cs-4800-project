@@ -6,3 +6,18 @@
 .card:hover {
 	border: 2px #bfbfbf solid;
   }
+
+.divL, .divR {
+        box-sizing: border-box;
+        padding: 10px;
+      }
+      .divL {
+        background: #ffe9c6;
+        /* OPTIONAL WIDTH
+        width: 40% */
+      }
+      .divR {
+        background: #ffdad8;
+        /* OPTIONAL WIDTH
+         width: 60% */
+      }
