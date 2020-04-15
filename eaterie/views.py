@@ -118,15 +118,12 @@ class MenuView(DetailView):
     def post(self, request, *args, **kwargs):
         if request.POST['add_to_cart_button'] == "Submit":
             menu_item_pk = request.POST['mipk']
-            item_amount = request.POST['item_amount']
+            item_amount = int(request.POST['item_amount'])
             user_pk = kwargs['pk']
-            menu_item = MenuItem.objects.get(pk=menu_item_pk)
-            quantity = int(item_amount)
             user = CustomUserModel.objects.get(pk=user_pk)
             customer = Customer.objects.get(user=user)
             cart = Cart.objects.get(customer=customer)
-            cart_entry = CartEntry(cart=cart, menu_item=menu_item, quantity=quantity)
-            cart_entry.save()
+            Cart.add_cart_item(cart, menu_item_pk, item_amount)
         return HttpResponseRedirect(request.path_info)
 
 

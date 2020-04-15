@@ -160,7 +160,7 @@ class MenuItem(models.Model):
     category = models.ForeignKey(MenuCategory, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.item_name
+        return self.item_name + "(s) from " + self.category.restaurant.restaurant_name;
 
 
 class Order(models.Model):
@@ -183,7 +183,7 @@ class OrderItem(models.Model):
         unique_together = ('order', 'menu_item')
 
     def __str__(self):
-        return str(self.quantity) + " " + self.menu_item.item_name
+        return str(self.quantity) + " units of " + self.menu_item
 
 
 class CartEntry(models.Model):
@@ -196,6 +196,9 @@ class CartEntry(models.Model):
 
     def get_price(self):
         return self.menu_item.price * self.quantity
+
+    def __str__(self):
+        return str(self.quantity) + " " + str(self.menu_item)
 
 
 class Cart(models.Model):
@@ -227,9 +230,9 @@ class Cart(models.Model):
             try:  # if the cart entry already exists, just increment that item's quantity
                 item_exists = CartEntry.objects.get(cart=self, menu_item=item)
                 item_exists.quantity += amount
-                item.exists.save()
-            except CartEntry.DoesNotExist:  # create a new cart entry with this item
-                new_entry = CartEntry.objects.create(cart=self, menu_item=item, quantity=1)
+                item_exists.save()
+            except CartEntry.DoesNotExist:  #create a new cart entry with this item
+                new_entry = CartEntry.objects.create(cart=self, menu_item=item, quantity=amount)
                 new_entry.save()
         except ObjectDoesNotExist:  # checks that the item is reachable
             pass

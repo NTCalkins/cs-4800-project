@@ -3,5 +3,9 @@
 
 {% block content %}
     <h1>Cart List</h1>
-
+    {% for cart_entry in user.customer.cart.cartentry_set.all %}
+        <li> {{ cart_entry }}</li>
+    {% endfor %}
+    <h1>Total cost:</h1>
+     ${{ user.customer.cart.calculate_total_cost}}
 {% endblock %}
