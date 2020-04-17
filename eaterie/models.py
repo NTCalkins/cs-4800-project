@@ -110,7 +110,7 @@ class Restaurant(models.Model):
         if total_items == 0:
             return 0
         else:
-            return total_price / total_items
+            return int(total_price / total_items)
 
 
 class Customer(models.Model):
