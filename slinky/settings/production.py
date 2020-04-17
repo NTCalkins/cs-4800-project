@@ -19,7 +19,7 @@ DATABASES = {
 }
 
 # media files: media, GIFs, videos, etc.
-MEDIA_URL = '/media/'
+MEDIA_URL = '/static/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
 
 # TODO: EMAIL VERIFICATION, S3 BUCKET STATIC FILES, Serving static files for production
