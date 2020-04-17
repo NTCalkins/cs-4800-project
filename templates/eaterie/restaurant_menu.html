@@ -65,41 +65,12 @@
                                                 <img src="{{ menu_item.image_file.url }}" height="100"
                                                      alt="">
                                             </div>
-                                    </div>
+                                        </div>
                                         <!-- TODO: Restrict to only customer -->
                                         <button type="button" data-toggle="modal" data-target="#modal-item-{{ menu_item.pk }}" >Order Here</button>
-
-                                            <!-- Add to cart modal -->
-                                        <div class="modal fade" id="modal-item-{{ menu_item.pk }}" name="{{ menu_item.item_name }}" tabindex="-1" role="dialog">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="add_to_cart_title">Add to Cart</h5>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <div class="container">
-                                                            <div class="divL">
-                                                                <p> How many {{ menu_item.item_name }}(s) would you like? </p>
-                                                            </div>
-                                                            <div class="divR">
-                                                                <form method="POST">
-                                                                    {% csrf_token %}
-                                                                    <input hidden type="text" name="mipk" value="{{ menu_item.pk }}" readonly>
-                                                                <label for="item_amount"> {{ menu_item.item_name }} quantity:</label><br>
-                                                                    <input type="number" default="1" min="1" step="1" name="item_amount"/>
-                                                                    <input type="submit" class="btn btn-primary" value="Submit" name="add_to_cart_button"/>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn-closemodal" data-dismiss="modal">Close</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
+                            </div>
                             {% endfor %}
                         </div>
                     </div>
