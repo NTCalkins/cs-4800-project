@@ -1,7 +1,6 @@
 {% load static %}
 <nav class="navbar navbar-expand-md sticky-top">
     {% if user.is_authenticated %}
-    <li class="nav-item dropdown">
         {% if user.is_customer %}
             <a href="{% url 'eaterie:customer_home' %}">
                 <img src="/static/media/navbar_logo1.png">
@@ -20,10 +19,8 @@
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
         <span class="navbar-toggler-icon"></span>
     </button>
-
     <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
         <ul class="navbar-nav">
-
             {% if user.is_authenticated %}
                 <li class="nav-item dropdown">
                     {% if user.is_customer %}
@@ -31,10 +28,8 @@
                            data-toggle="dropdown">
                             Hello, {{ user.first_name }}!
                         </a>
-
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="{% url 'eaterie:update_account' user.pk %}">Account</a>
-                            <!--<a class="dropdown-item" href="#">Another action</a>-->
                             <a class="dropdown-item" href="{% url 'eaterie:cart_view' user.customer.pk %}">My Orders</a>
                             <a class="dropdown-item" href="{% url 'eaterie:cart_view' user.customer.pk %}">My Reviews</a>
                             <a class="dropdown-item" href="{% url 'account_logout' %}">Sign out</a>
@@ -46,7 +41,6 @@
                     {% endif %}
 
                     {% if user.is_restaurant %}
-                    <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                            data-toggle="dropdown">
                             Welcome, {{ user.first_name }}!
@@ -58,16 +52,17 @@
                             <a class="dropdown-item" href="{% url 'eaterie:restaurant_menu' user.restaurant.pk %}">Restaurant
                                 Menu</a>
                             <a class="dropdown-item" href="{% url 'account_logout' %}">Sign out</a>
-                        </div></li>
+                        </div>
+                    </li>
                     {% endif %}
             {% else %}
             <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'account_login' %}">Sign in <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <!-- Trigger the sign up modal -->
-                    <a class="nav-link" href="#" data-toggle="modal" data-target="#userTypeQ-signup">Sign Up</a>
-                </li>
+                <a class="nav-link" href="{% url 'account_login' %}">Sign in <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <!-- Trigger the sign up modal -->
+                <a class="nav-link" href="#" data-toggle="modal" data-target="#userTypeQ-signup">Sign Up</a>
+            </li>
             {% endif %}
 
         </ul>
