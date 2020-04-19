@@ -36,7 +36,10 @@
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'eaterie:cart_view' user.customer.pk %}">Cart</a>
+                        <a class="nav-link" href="{% url 'eaterie:cart_view' user.customer.pk %}">
+                            <i class="fa fa-shopping-cart cart-icon"></i> Cart
+                            <!--<span class="badge">0</span>-->
+                        </a>
                      </li>
                     {% endif %}
 
