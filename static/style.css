@@ -1,9 +1,14 @@
+/*SemanicUI icons*/
+@import url(https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css);
+/*---------------*/
+
 body {
   background: whitesmoke;
 }
 .page-footer {
   color: #0057B8;
 }
+
 /*--- navigation bar ---*/
 .navbar {
   background: rgba(0, 0, 0, 0.774);
@@ -28,6 +33,19 @@ body {
 .custom-toggler .navbar-toggler-icon {
   background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255,255,255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
 }
+.badge {
+    background-color: #0057B8;
+    border-radius: 10px;
+    color: white;
+    display: inline-block;
+    /*font-size: 12px;*/
+    line-height: 1;
+    padding: 3px 7px;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
 /*-- modal design --*/
 .btn-restaurant-customer{
   background-color: #0057B8;
