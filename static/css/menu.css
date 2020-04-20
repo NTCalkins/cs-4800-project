@@ -19,3 +19,8 @@
         /* OPTIONAL WIDTH
          width: 60% */
       }
+
+.message {
+    width: 93.5%;
+    margin: 1em;
+}
