@@ -13,7 +13,7 @@ from eaterie.decorators import (customer_required, restaurant_required, user_ide
                                 restaurant_owner_identity_check)
 from eaterie.forms import (CustomerSignUpForm, RestaurantSignUpForm, CustomerUpdateForm, RestaurantUpdateForm,
                            RestaurantSearchForm)
-from eaterie.models import Restaurant, CustomUserModel, MenuCategory, MenuItem, Customer, Cart, CartEntry
+from eaterie.models import Restaurant, CustomUserModel, MenuCategory, MenuItem, Customer, Cart, CartEntry, Order
 
 
 def login_redirect(request):
@@ -116,7 +116,7 @@ class MenuView(DetailView):
         return reverse('eaterie:menu', args=[str(restaurant.id)])
 
     def post(self, request, *args, **kwargs):
-        if request.POST['add_to_cart_button'] == "Submit":
+        if "Add to cart" == request.POST['add_to_cart_button']:
             menu_item_pk = request.POST['mipk']
             item_amount = int(request.POST['item_amount'])
             user_pk = kwargs['pk']
@@ -158,5 +158,19 @@ class CartView(DetailView):
     model = Cart
     template_name = 'eaterie/cart_view.html'
 
+    def post(self, request, *args, **kwargs):
+        user_pk = kwargs['pk']
+        si = request.POST['special_instructions']
+        print(si)
+        cart = Cart.objects.get(pk=user_pk)
+        print("Emptying cart of " + str(cart.customer))
+        Cart.checkout(cart)
+        return HttpResponseRedirect(request.path_info)
 
+@method_decorator(customer_required, name='dispatch')
+class OrderListView(ListView):
+    model = Order
+
+    def get_queryset(self):
+        return Order.objects.filter()
 
