@@ -8,14 +8,25 @@
   }
 
 .divL, .divR {
-        box-sizing: border-box;
-        padding: 10px;
+    box-sizing: border-box;
+    border-radius: 3px;
+    margin: auto;
       }
-      .divL {
-        /* OPTIONAL WIDTH
-        width: 40% */
-      }
-      .divR {
-        /* OPTIONAL WIDTH
-         width: 60% */
-      }
+
+.divL {
+    background: #ffe9c6;
+    /* OPTIONAL WIDTH
+    width: 40% */
+
+}
+.divR {
+    background: #ffdad8;
+    /* OPTIONAL WIDTH
+    width: 60% */
+
+}
+
+.message {
+    margin: auto;
+    width: 100%;
+}
