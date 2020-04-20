@@ -1,5 +1,5 @@
 {% load static %}
-<nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-md sticky-top">
     {% if user.is_authenticated %}
         {% if user.is_customer %}
             <a href="{% url 'eaterie:customer_home' %}">
@@ -19,10 +19,8 @@
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
         <span class="navbar-toggler-icon"></span>
     </button>
-
     <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
         <ul class="navbar-nav">
-
             {% if user.is_authenticated %}
                 <li class="nav-item dropdown">
                     {% if user.is_customer %}
@@ -30,14 +28,19 @@
                            data-toggle="dropdown">
                             Hello, {{ user.first_name }}!
                         </a>
-
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="{% url 'eaterie:update_account' user.pk %}">Account</a>
-                            <!--<a class="dropdown-item" href="#">Another action</a>-->
-                            <a class="dropdown-item" href="{% url 'eaterie:cart_view' user.customer.pk %}">Cart</a>
                             <a class="dropdown-item" href="{% url 'eaterie:cart_view' user.customer.pk %}">My Orders</a>
                             <a class="dropdown-item" href="{% url 'eaterie:cart_view' user.customer.pk %}">My Reviews</a>
+                            <a class="dropdown-item" href="{% url 'account_logout' %}">Sign out</a>
                         </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'eaterie:cart_view' user.customer.pk %}">
+                            <i class="fa fa-shopping-cart cart-icon"></i> Cart
+                            <!--<span class="badge">0</span>-->
+                        </a>
+                     </li>
                     {% endif %}
 
                     {% if user.is_restaurant %}
@@ -51,21 +54,18 @@
                                 Menu</a>
                             <a class="dropdown-item" href="{% url 'eaterie:restaurant_menu' user.restaurant.pk %}">Restaurant
                                 Menu</a>
+                            <a class="dropdown-item" href="{% url 'account_logout' %}">Sign out</a>
                         </div>
+                    </li>
                     {% endif %}
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'account_logout' %}">Sign out</a>
-                </li>
             {% else %}
-                <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'account_login' %}">Sign in <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <!-- Trigger the sign up modal -->
-                    <a class="nav-link" href="#" data-toggle="modal" data-target="#userTypeQ-signup">Sign Up</a>
-                </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'account_login' %}">Sign in <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <!-- Trigger the sign up modal -->
+                <a class="nav-link" href="#" data-toggle="modal" data-target="#userTypeQ-signup">Sign Up</a>
+            </li>
             {% endif %}
 
         </ul>
