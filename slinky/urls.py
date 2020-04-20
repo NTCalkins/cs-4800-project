@@ -17,6 +17,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView
 
 from eaterie import views
 
@@ -28,7 +29,9 @@ urlpatterns = [
     # include all-auth authentication package
     path('accounts/', include('allauth.urls')),
 
-    path('', include('eaterie.urls')),
+    path('', include('eaterie.urls')), #for non-react views
+
+    #path('', TemplateView.as_view(template_name='index.html')), #for react views
 
 ]
 

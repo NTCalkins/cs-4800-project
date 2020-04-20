@@ -19,7 +19,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 # # For static files
 STATIC_URL = "/static/"
 
+# For non-react files
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+# For react files
+#STATIC_ROOT = os.path.join(BASE_DIR, "frontend/gui/build/static")
+
+STATICFILES_DIR = [
+    os.path.join(BASE_DIR, 'frontend/gui/build/static'),
+]
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -64,7 +72,10 @@ ROOT_URLCONF = 'slinky.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+            os.path.join(BASE_DIR, 'frontend/gui/build'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
