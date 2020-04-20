@@ -3,6 +3,7 @@ from decouple import config
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', cast=bool)
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -16,5 +17,9 @@ DATABASES = {
         'PORT': config('DB_PORT'),
     }
 }
+
+# media files: media, GIFs, videos, etc.
+MEDIA_URL = '/static/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
 
 # TODO: EMAIL VERIFICATION, S3 BUCKET STATIC FILES, Serving static files for production
