@@ -18,7 +18,6 @@
     </div>
     <hr/>
     <div class="container w-75">
-
         {% if restaurants %}
             {% if request.GET.zip_code %}
                 {% for restaurant in restaurants %}
@@ -39,8 +38,6 @@
                                     <h6> {{ restaurant.get_average_price }}</h6>
                                 </div>
                             </div>
-
-
                         </a>
                     </div>
 
@@ -142,11 +139,8 @@
 
                                         <h5>Rating</h5>
                                         <h6>Average price: {{ restautant.get_average_price }}</h6>
-
                                     </a>
-
                                 </div>
-
                             {% endfor %}
                         </div>
                     </div>
