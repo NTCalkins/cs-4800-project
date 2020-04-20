@@ -260,12 +260,17 @@ class Cart(models.Model):
         Creates an Order from the CartEntrys in the user's cart.
         """
 
+        cart_entries = CartEntry.objects.filter(cart=self)
+        if not cart_entries:
+            print("Unable to make order, nothing in cart!")
+            return
+
         self.order_date = datetime.now()
         new_order = Order.objects.create(customer=self.customer, order_date=self.order_date)
         new_order.save()
-        cart_entries = CartEntry.objects.filter(cart=self)
         # Populate the new order with its order items, and destroy all the cart items so it can be used again
         for cart_entry in cart_entries:
             new_order_item = OrderItem.objects.create(order=new_order, quantity=cart_entry.quantity,
                                                       menu_item=cart_entry.menu_item)
+            new_order_item.save()
             cart_entry.delete()
