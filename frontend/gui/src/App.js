@@ -14,6 +14,7 @@ import Route from 'react-router-dom/Route';
 class App extends Component {
   render() {
     return (
+    /*
     <Router>
     <ul>
     <Link to="/">Home</Link>
@@ -30,6 +31,8 @@ class App extends Component {
       }
     }/>
     </Router>
+    */
+    <h2>Hello World</h2>
     );
   }
 }
