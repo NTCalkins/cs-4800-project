@@ -74,7 +74,7 @@
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="add_to_cart_title">Add to Cart</h5>
+                                                        <h5 class="modal-title" id="add_to_cart_title">{{ menu_item.item_name }} - ${{ menu_item.price }}</h5>
                                                     </div>
                                                     <div class="modal-body">
                                                         <div class="container">
@@ -87,7 +87,7 @@
                                                                     <input hidden type="text" name="mipk" value="{{ menu_item.pk }}" readonly>
                                                                 <label for="item_amount"> {{ menu_item.item_name }} quantity:</label><br>
                                                                     <input type="number" default="1" min="1" step="1" name="item_amount"/>
-                                                                    <input type="submit" class="btn btn-primary" value="Submit" name="add_to_cart_button"/>
+                                                                    <input type="submit" class="btn btn-primary" value="Add to cart" name="add_to_cart_button"/>
                                                                 </form>
                                                             </div>
                                                         </div>
