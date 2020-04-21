@@ -170,7 +170,9 @@ class CartView(DetailView):
 @method_decorator(customer_required, name='dispatch')
 class OrderListView(ListView):
     model = Order
+    template_name = 'eaterie/order_list_view.html'
+
 
     def get_queryset(self):
-        return Order.objects.filter()
+        return Order.objects.filter(customer=self.request.user.customer)
 
