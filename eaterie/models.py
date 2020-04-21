@@ -274,3 +274,5 @@ class Cart(models.Model):
                                                       menu_item=cart_entry.menu_item)
             new_order_item.save()
             cart_entry.delete()
+
+        return new_order

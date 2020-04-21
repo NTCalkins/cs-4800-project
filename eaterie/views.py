@@ -164,7 +164,11 @@ class CartView(DetailView):
         print(si)
         cart = Cart.objects.get(pk=user_pk)
         print("Emptying cart of " + str(cart.customer))
-        Cart.checkout(cart)
+        new_order = Cart.checkout(cart)
+        # Check if a new order was generated
+        if new_order:
+            new_order.special_instruction = si
+            new_order.save()
         return HttpResponseRedirect(request.path_info)
 
 @method_decorator(customer_required, name='dispatch')
