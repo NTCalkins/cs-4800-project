@@ -11,7 +11,7 @@ body {
 
 /*--- navigation bar ---*/
 .navbar {
-  background: rgba(0, 0, 0, 0.774);
+  background: rgba(0, 87, 184, 1);
 }
 .nav-link,
 .navbar-brand {
@@ -22,7 +22,7 @@ body {
   margin-right: 1em !important;
 }
 .nav-link:hover {
-  color: #0057B8;
+  color: rgba(0, 0, 0, 1);
 }
 .navbar-collapse {
   justify-content: flex-end;
