@@ -1,4 +1,8 @@
 {% extends "base_template.html" %}
+{% load static %}
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static '' %}"> <!-- For adding css files to this html document -->
+{% endblock %}
 {% load widget_tweaks %}
 
 {% block content %}
@@ -29,13 +33,14 @@
                                     <img src="{{ restaurant.image_file.url }}" height="90" width="90" alt="">
                                 </div>
                                 <div class="d-flex col-md-10 justify-content-between">
-                                    <div>
+                                    <div class="">
                                         <h4>{{ restaurant.restaurant_name }}</h4>
                                         Opening hour
                                     </div>
-
-                                    <h5>Rating</h5>
-                                    <h6> {{ restaurant.get_average_price }}</h6>
+                                    <div>
+                                       <h5>Rating</h5>
+                                    <h6> Avg. Price: ${{ restaurant.get_average_price }}</h6>
+                                    </div>
                                 </div>
                             </div>
                         </a>

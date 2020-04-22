@@ -1,11 +1,57 @@
 {% extends "base_template.html" %}
 {% load widget_tweaks %}
+{% load static %}
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/cart_view.css' %}">
+{% endblock %}
 
 {% block content %}
-    <h1>Cart List</h1>
+    <h1>Shopping Cart</h1>
+    {% if  not user.customer.cart.cartentry_set.all %}
+        <h1>Your cart is empty!</h1>
+    {% else %}
     {% for cart_entry in user.customer.cart.cartentry_set.all %}
-        <li> {{ cart_entry }}</li>
+        <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h4>{{ cart_entry }}</h4>
+                 <p>${{ cart_entry.menu_item.price }} each</p>
+                <div class="row" style="max-height: 150px">
+                     <div class="col-md-6 test">
+                    <p style="font-size:10px">{{ cart_entry.menu_item.description|truncatewords:40 }}</p>
+                    </div>
+                    <div class="menu-image">
+                     <img src="{{ cart_entry.menu_item.image_file.url }}" height="100" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
     {% endfor %}
-    <h1>Total cost:</h1>
-     ${{ user.customer.cart.calculate_total_cost}}
+    <h1>Total cost: ${{ user.customer.cart.calculate_total_cost}}</h1>
+
+    <button type="button" data-toggle="modal" data-target="#modal-checkout" >Check Out</button>
+
+    <div class="modal fade" id="modal-checkout" name="modal-checkout" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>Are You Sure You're Ready to Order?</h5>
+                </div>
+                <div class="modal-body">
+                    <p> {{ user.customer.cart.calculate_total_cost }}</p>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <label for="special_instructions">Special Instructions:</label>
+                        <input type="text" name="special_instructions">
+                        <input type="submit" class="btn btn-primary" value="Checkout" name="checkout_button"/>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-closemodal" data-dismiss="modal">Back to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 {% endblock %}
