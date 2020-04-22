@@ -1,5 +1,5 @@
 {% load static %}
-<nav class="navbar navbar-expand-md sticky-top">
+<nav class="navbar navbar-expand-md sticky-top" style="background-color: #0057B8;">
     {% if user.is_authenticated %}
         {% if user.is_customer %}
             <a href="{% url 'eaterie:customer_home' %}">
