@@ -1,9 +1,12 @@
 {% extends "base_template.html" %}
 {% load widget_tweaks %}
 {% load static %}
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/cart_view.css' %}">
+{% endblock %}
 
 {% block content %}
-    <h1>Cart List</h1>
+    <h1>Shopping Cart</h1>
     {% if  not user.customer.cart.cartentry_set.all %}
         <h1>Your cart is empty!</h1>
     {% else %}
@@ -14,7 +17,7 @@
                 <h4>{{ cart_entry }}</h4>
                  <p>${{ cart_entry.menu_item.price }} each</p>
                 <div class="row" style="max-height: 150px">
-                     <div class="col-md-6">
+                     <div class="col-md-6 test">
                     <p style="font-size:10px">{{ cart_entry.menu_item.description|truncatewords:40 }}</p>
                     </div>
                     <div class="menu-image">
