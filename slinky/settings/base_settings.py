@@ -18,10 +18,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 #
 # STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 #
-# # # For static files
+# For static files
 STATIC_URL = "/static/"
-#
-# # For non-react files
+
+# For non-react files
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # For react files

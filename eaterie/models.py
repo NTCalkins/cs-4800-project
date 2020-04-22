@@ -2,6 +2,7 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now as django_now
 from datetime import datetime
@@ -164,6 +165,7 @@ class MenuItem(models.Model):
 
 
 class Order(models.Model):
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, default=1)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     order_date = models.DateTimeField(default=django_now)
     special_instruction = models.CharField(max_length=512, blank=True)
@@ -264,15 +266,39 @@ class Cart(models.Model):
         if not cart_entries:
             print("Unable to make order, nothing in cart!")
             return
+        restaurants = set()
+        print(cart_entries)
 
-        self.order_date = datetime.now()
-        new_order = Order.objects.create(customer=self.customer, order_date=self.order_date)
-        new_order.save()
-        # Populate the new order with its order items, and destroy all the cart items so it can be used again
+        # Get a unique set of the restaurants in the cart order O(cart_entries.length)
         for cart_entry in cart_entries:
-            new_order_item = OrderItem.objects.create(order=new_order, quantity=cart_entry.quantity,
-                                                      menu_item=cart_entry.menu_item)
-            new_order_item.save()
-            cart_entry.delete()
+            restaurants.add(cart_entry.menu_item.category.restaurant)
 
-        return new_order
+        for restaurant in restaurants:
+            new_order = Order.objects.create(customer=self.customer, restaurant=restaurant, order_date=datetime.now())
+            new_order.save()
+            for cart_entry in cart_entries:
+                if cart_entry.menu_item.category.restaurant == restaurant:
+                    new_order_item = OrderItem.objects.create(order=new_order, quantity=cart_entry.quantity,
+                                                              menu_item=cart_entry.menu_item)
+                    cart_entry.delete()
+                    new_order_item.save()
+
+        #
+        # self.order_date = datetime.now()
+        # new_order = Order.objects.create(customer=self.customer, order_date=self.order_date)
+        # new_order.save()
+        # # Populate the new order with its order items, and destroy all the cart items so it can be used again
+        # for cart_entry in cart_entries:
+        #     new_order_item = OrderItem.objects.create(order=new_order, quantity=cart_entry.quantity,
+        #                                               menu_item=cart_entry.menu_item)
+        #     new_order_item.save()
+        #     cart_entry.delete()
+
+
+class Review(models.Model):
+    order = models.OneToOneField(Order,on_delete=models.CASCADE, primary_key=True)
+    comment = models.TextField(max_length=512)
+    food_quality = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], default=3)
+    timeliness = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], default=3)
+
+
