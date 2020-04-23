@@ -185,7 +185,7 @@ class OrderItem(models.Model):
         unique_together = ('order', 'menu_item')
 
     def __str__(self):
-        return str(self.quantity) + " units of " + self.menu_item
+        return str(self.quantity) + " units of " + str(self.menu_item)
 
 
 class CartEntry(models.Model):
