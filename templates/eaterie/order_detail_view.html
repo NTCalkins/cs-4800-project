@@ -1,5 +1,8 @@
 {% extends "base_template.html" %}
 
 {% block content %}
-<h1> {{ order }}</h1>
+    <h1>{{ order }}</h1>
+    {% for order_item in order.orderitem_set.all %}
+        <h1>{{ order_item }}</h1>
+    {% endfor %}
 {% endblock %}
