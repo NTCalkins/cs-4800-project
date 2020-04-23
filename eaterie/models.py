@@ -173,7 +173,7 @@ class Order(models.Model):
     order_cancelled = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.customer.user.email + " order made at: " + str(self.order_date)
+        return self.restaurant.restaurant_name + " order made at: " + str(self.order_date)
 
 
 class OrderItem(models.Model):

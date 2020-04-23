@@ -30,13 +30,13 @@
                         </a>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="{% url 'eaterie:update_account' user.pk %}">Account</a>
-                            <a class="dropdown-item" href="{% url 'eaterie:order_list_view' user.customer.pk %}">My Orders</a>
-                            <a class="dropdown-item" href="{% url 'eaterie:cart_view' user.customer.pk %}">My Reviews</a>
+                            <a class="dropdown-item" href="{% url 'eaterie:order_list_view' %}">My Orders</a>
+                            <a class="dropdown-item" href="{% url 'eaterie:cart_view' %}">My Reviews</a>
                             <a class="dropdown-item" href="{% url 'account_logout' %}">Sign out</a>
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'eaterie:cart_view' user.customer.pk %}">
+                        <a class="nav-link" href="{% url 'eaterie:cart_view' %}">
                             <i class="fa fa-shopping-cart cart-icon"></i> Cart
                             <!--<span class="badge">0</span>-->
                         </a>

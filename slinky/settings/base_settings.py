@@ -15,17 +15,15 @@ from decouple import config
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-#
-# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-#
-# For static files
-STATIC_URL = "/static/"
 
-# For non-react files
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+# # For static files
+# STATIC_URL = "/static/"
+#
+# # For non-react files
+# STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # For react files
-#STATIC_ROOT = os.path.join(BASE_DIR, "frontend/gui/build/static")
+# STATIC_ROOT = os.path.join(BASE_DIR, "frontend/gui/build/static")
 
 # STATICFILES_DIR = [
 #     os.path.join(BASE_DIR, 'frontend/gui/build/static'),
