@@ -1,10 +1,11 @@
+import pytz
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import ugettext_lazy as _
-from django.utils.timezone import now as django_now
+from django.utils import timezone
 from datetime import datetime
 
 
@@ -167,13 +168,32 @@ class MenuItem(models.Model):
 class Order(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, default=1)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    order_date = models.DateTimeField(default=django_now)
+    order_date = models.DateTimeField(auto_now_add=True)
     special_instruction = models.CharField(max_length=512, blank=True)
     order_fulfilled = models.BooleanField(default=False)
     order_cancelled = models.BooleanField(default=False)
 
     def __str__(self):
         return self.restaurant.restaurant_name + " order made at: " + str(self.order_date)
+
+    def get_total_cost(self):
+        order_items = OrderItem.objects.filter(order=self)
+        sum = 0
+        for order_item in order_items:
+            sum += order_item.get_price()
+        return sum
+
+    def get_date(self):
+        date = self.order_date
+        timezone = pytz.timezone("America/Los_Angeles")
+        date_aware = date.astimezone(timezone)
+        return date_aware.strftime("%x")
+
+    def get_time(self):
+        date = self.order_date
+        timezone = pytz.timezone("America/Los_Angeles")
+        date_aware = date.astimezone(timezone)
+        return date_aware.strftime("%X")
 
 
 class OrderItem(models.Model):
@@ -186,6 +206,9 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return str(self.quantity) + " units of " + str(self.menu_item)
+
+    def get_price(self):
+        return self.menu_item.price * self.quantity
 
 
 class CartEntry(models.Model):
@@ -274,7 +297,7 @@ class Cart(models.Model):
             restaurants.add(cart_entry.menu_item.category.restaurant)
 
         for restaurant in restaurants:
-            new_order = Order.objects.create(customer=self.customer, restaurant=restaurant, order_date=datetime.now())
+            new_order = Order.objects.create(customer=self.customer, restaurant=restaurant)
             new_order.save()
             for cart_entry in cart_entries:
                 if cart_entry.menu_item.category.restaurant == restaurant:
