@@ -5,7 +5,7 @@
     <ul>
     {% for order in order_list %}
     <li>
-        {{ order }}
+        <a href="{% url 'eaterie:order_detail_view' user.pk order.pk %}"> {{ order }}</a>
     </li>
     {% endfor %}
     </ul>
