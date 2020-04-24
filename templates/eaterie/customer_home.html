@@ -4,50 +4,43 @@
     <link rel="stylesheet" href="{% static '' %}"> <!-- For adding css files to this html document -->
 {% endblock %}
 {% load widget_tweaks %}
-
 {% block content %}
-    <div class="container">
-         <h1 class="d-flex justify-content-center">Welcome back, {{ user.first_name }}!</h1>
+    <div class="container" style="padding-bottom: 20px;">
+        <h1 class="d-flex justify-content-center" style="padding-top: 10px; color: #0057B8;">Welcome back, {{ user.first_name }}!</h1>
         <form action="">
             <div class="input-group justify-content-center">
                 {% for field in form.visible_fields %}
                     {% render_field field size="60" placeholder=field.label %}
                 {% endfor %}
                 <div class="input-group-append">
-                    <input class="btn btn-primary" type="submit" value="Find food"/>
+                    <input class="btn btn-primary" type="submit" value="Find Food"/>
                 </div>
             </div>
         </form>
-
     </div>
-    <hr/>
+
     <div class="container w-75">
         {% if restaurants %}
             {% if request.GET.zip_code %}
+            <div class="h-auto card-deck">
                 {% for restaurant in restaurants %}
-                    <div class="list-group">
-                        <a href="{% url 'eaterie:restaurant_menu' restaurant.pk %}"
-                           class="list-group-item list-group-item-action list-group-item-light">
-                            <div class="row">
-                                <div class="col-md-2">
-                                    <img src="{{ restaurant.image_file.url }}" height="90" width="90" alt="">
-                                </div>
-                                <div class="d-flex col-md-10 justify-content-between">
-                                    <div class="">
-                                        <h4>{{ restaurant.restaurant_name }}</h4>
-                                        Opening hour
-                                    </div>
-                                    <div>
-                                       <h5>Rating</h5>
-                                    <h6> Avg. Price: ${{ restaurant.get_average_price }}</h6>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="w-25 h-25 card text-center">
+                        <a href="{% url 'eaterie:restaurant_menu' restaurant.pk %}" class="list-group-item list-group-item-action list-group-item-light">
+                            <img src="{{ restaurant.image_file.url }}" class="card-img-top rounded mx-auto d-block" alt="Restaurant Image" style="width: 10rem;">
+                        <div class="card-body">
+                            <h5 class="card-title" style="color: rgba(0, 0, 0, 1);">{{ restaurant.restaurant_name }}</h5>
+                            <p>{% if restaurant.restaurant_address %}
+                            {{ restaurant.restaurant_address }}<br>
+                            {% endif %}<b>Phone:</b> {{ restaurant.phone_number }}</p>
+                        </div>
+                        <div class="card-body text-center" style="border-top: 1px solid rgba(0,0,0,.1);">
+                            {{ restaurant.get_food_quality }} - {{ restaurant.get_average_price }}
+                        </div>
                         </a>
                     </div>
-
                 {% endfor %}
-                <hr>
+                </div>
+                <br>
                 {% if is_paginated %}
                 {% endif %}
                 <nav>
@@ -111,46 +104,28 @@
                 </nav>
 
             {% else %}
-                <!--Suggestion: Restaurant near you-->
-                <div class="row">
-                    <div class="col-sm-3">
-                        <a href="?zip_code={{ request.user.customer.zip_code }}">
-                            <div class="card">
-                                <img src="/static/media/restaurant_near_you.jpg" alt="">
-                                <div class="carousel-caption d-none d-lg-block">
-                                    <div class="bg-dark">
-                                        <h4>Most popular near you</h4>
-                                        <div>See all</div>
-                                    </div>
-                                </div>
-                            </div>
+            <!--Suggestion: Restaurants near you-->
+            <h4 class="d-flex justify-content-left" style="padding-top: 10px; color: #0057B8;">Some suggestions near you...</h4>
+            <div class="h-auto card-deck">
+            {% for restaurant in restaurants|slice:":6" %}
+                <div class="w-25 h-25 card text-center">
+                        <a href="{% url 'eaterie:restaurant_menu' restaurant.pk %}" class="list-group-item list-group-item-action list-group-item-light">
+                            <img src="{{ restaurant.image_file.url }}" class="card-img-top rounded mx-auto d-block" alt="Restaurant Image" style="width: 10rem;">
+                        <div class="card-body">
+                            <h5 class="card-title" style="color: rgba(0, 0, 0, 1);">{{ restaurant.restaurant_name }}</h5>
+                            <p>{% if restaurant.restaurant_address %}
+                            {{ restaurant.restaurant_address }}<br>
+                            {% endif %}<b>Phone:</b> {{ restaurant.phone_number }}</p>
+                        </div>
+                        <div class="card-body text-center" style="border-top: 1px solid rgba(0,0,0,.1);">
+                            {{ restaurant.get_food_quality }} - {{ restaurant.get_average_price }}
+                        </div>
                         </a>
                     </div>
-                    <div class="col-sm-9">
-                        <div class="row">
-                            {% for restautant in restaurants|slice:":6" %}
-
-                                <div class="col-sm-4">
-                                    <a href="{% url 'eaterie:restaurant_menu' restautant.pk %}"
-                                       class="list-group-item list-group-item-action list-group-item-light">
-                                        <div>
-                                            <img src="{{ restautant.image_file.url }}" height="120" width="100%" alt="">
-                                        </div>
-
-                                        <div>
-                                            <h4>{{ restautant.restaurant_name }}</h4>
-                                            Opening hour
-                                        </div>
-
-                                        <h5>Rating</h5>
-                                        <h6>Average price: {{ restautant.get_average_price }}</h6>
-                                    </a>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
 
         {% elif request.GET.zip_code %}
             <p class="d-flex justify-content-center">No results</p>
