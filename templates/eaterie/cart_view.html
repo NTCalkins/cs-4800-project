@@ -50,9 +50,10 @@
 </div>
     {% endfor %}
     <h1 class="text-center">Total cost: ${{ user.customer.cart.calculate_total_cost}}</h1>
-
+    <div style="text-align:center">
     <button type="button" data-toggle="modal" data-target="#modal-checkout" class="btn btn-success checkoutButton">
         <i class="fa fa-shopping-cart cart-icon"></i> Check Out</button>
+    </div>
 
     <div class="modal fade" id="modal-checkout" name="modal-checkout" tabindex="-1" role="dialog">
         <div class="modal-dialog">
