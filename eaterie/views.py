@@ -185,12 +185,19 @@ class OrderListView(ListView, MultipleObjectMixin):
 @method_decorator(customer_required, name='dispatch')
 class OrderDetailView(DetailView):
     model = Order
+    pk_url_kwarg = 'pk_order'
     template_name = 'eaterie/order_detail_view.html'
 
-
+@method_decorator(user_identity_check, name='dispatch')
+@method_decorator(customer_required, name='dispatch')
 class ReviewUpdate(UpdateView):
-    model= Review
+    model = Review
+    pk_url_kwarg = 'pk_review'
     fields = '__all__'
-    template_name = 'eaterie/review_update.html'
+    template_name = 'eaterie/review_update_form.html'
 
-
+    def get_success_url(self):
+        return reverse(
+            'eaterie:review_update_form',
+            args=[str(self.request.user.id), str(self.request.POST['order'])]
+                       )

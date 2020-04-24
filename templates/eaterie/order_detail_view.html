@@ -1,8 +1,29 @@
 {% extends "base_template.html" %}
+{% load static %}
 
 {% block content %}
-    <h1>{{ order }}</h1>
+    <h1>{{ order }} on {{ order.get_date }} at {{ order.get_time }}</h1>
+    {% if not order.order_cancelled %}
+        <span class="badge badge-success"> This order is in progress</span>
+    {% else %}
+        <span class="label label-important"> This order has been cancelled</span>
+    {% endif %}
     {% for order_item in order.orderitem_set.all %}
-        <h1>{{ order_item }}</h1>
+        <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h4>{{ order_item }}</h4>
+                 <p>${{ order_item.menu_item.price }} each</p>
+                <div class="row" style="max-height: 150px">
+                     <div class="col-md-6 test">
+                    <p style="font-size:10px">{{ order_item.menu_item.description|truncatewords:40 }}</p>
+                    </div>
+                    <div class="menu-image">
+                     <img src="{{ order_item.menu_item.image_file.url }}" height="100" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
     {% endfor %}
 {% endblock %}
