@@ -197,13 +197,13 @@ class Order(models.Model):
         date = self.order_date
         timezone = pytz.timezone("America/Los_Angeles")
         date_aware = date.astimezone(timezone)
-        return date_aware.strftime("%x")
+        return date_aware.strftime("%B") + date_aware.strftime("%d") + ", " +date_aware.strftime("%Y")
 
     def get_time(self):
         date = self.order_date
         timezone = pytz.timezone("America/Los_Angeles")
         date_aware = date.astimezone(timezone)
-        return date_aware.strftime("%X")
+        return date_aware.strftime("%I") + ":" + date_aware.strftime("%M") + " " + date_aware.strftime("%p")
 
     def get_review(self):
         review = Review.objects.get(order=self)
