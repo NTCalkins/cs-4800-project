@@ -131,7 +131,28 @@ class Restaurant(models.Model):
         for r in ratings:
             actual_ratings += r
             total_ratings += 5
-        average = total_ratings / actual_ratings
+        average = int(actual_ratings / total_ratings)
+        if average == 0:
+            return "No Ratings Yet"
+        if average == 1:
+            return "★"
+        if average == 2:
+            return "★★"
+        if average == 3:
+            return "★★★"
+        if average == 4:
+            return "★★★★"
+        else:
+            return "★★★★★"
+
+    def get_timeliness(self):
+        ratings = Review.objects.filter(restaurant=self)
+        total_ratings = 0
+        actual_ratings = 0
+        for r in ratings:
+            actual_ratings += r
+            total_ratings += 5
+        average = int(actual_ratings / total_ratings)
         if average == 0:
             return "No Ratings Yet"
         if average == 1:
@@ -153,9 +174,10 @@ class Customer(models.Model):
     user = models.OneToOneField(CustomUserModel, on_delete=models.CASCADE)
     PREFERENCE_CHOICES = [
         ('ITA', 'Italian'),
-        ('FF', 'Fastfood'),
+        ('FF', 'Fast Food'),
         ('CHN', 'Chinese'),
-        ('VTN', 'Vietnamese')
+        ('VTN', 'Vietnamese'),
+        ('MEX', 'Mexican'),
     ]
     preference_1 = models.CharField(max_length=64, choices=PREFERENCE_CHOICES, default='ITA')
     preference_2 = models.CharField(max_length=64, choices=PREFERENCE_CHOICES, default='VTN')
@@ -368,7 +390,7 @@ class Review(models.Model):
     comment = models.TextField(max_length=512, blank=True)
     food_quality = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], default=3)
     timeliness = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], default=3)
-    restaurant = models.ForeignKey('Restaurant', on_delete=models.CASCADE, null=False)
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, null=False)
 
     def __str__(self):
         return str(self.food_quality) + "/5  food quality and " + str(self.timeliness) \
