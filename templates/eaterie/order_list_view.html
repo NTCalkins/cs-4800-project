@@ -1,4 +1,9 @@
 {% extends "base_template.html" %}
+{% load static %}
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/menu.css' %}">
+{% endblock %}
+
 {% block content %}
     <h1>Orders</h1>
     {% if order_list %}
