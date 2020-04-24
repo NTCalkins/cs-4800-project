@@ -125,12 +125,14 @@ class Restaurant(models.Model):
                 return "$$$$"
 
     def get_food_quality(self):
-        ratings = Review.objects.filter(restaurant=self)
         total_ratings = 0
         actual_ratings = 0
-        for r in ratings:
-            actual_ratings += r
-            total_ratings += 5
+        orders = Order.objects.filter(restaurant=self)
+	for o in orders:
+		ratings = Review.objects.filter(order=o).values()
+		for r in ratings:
+            		actual_ratings += r
+           		 total_ratings += 5
         average = int(actual_ratings / total_ratings)
         if average == 0:
             return "No Ratings Yet"
@@ -146,12 +148,14 @@ class Restaurant(models.Model):
             return "★★★★★"
 
     def get_timeliness(self):
-        ratings = Review.objects.filter(restaurant=self)
-        total_ratings = 0
+        otal_ratings = 0
         actual_ratings = 0
-        for r in ratings:
-            actual_ratings += r
-            total_ratings += 5
+        orders = Order.objects.filter(restaurant=self)
+	for o in orders:
+		ratings = Review.objects.filter(order=o).values()
+		for r in ratings:
+            		actual_ratings += r
+           		 total_ratings += 5
         average = int(actual_ratings / total_ratings)
         if average == 0:
             return "No Ratings Yet"
@@ -390,7 +394,6 @@ class Review(models.Model):
     comment = models.TextField(max_length=512, blank=True)
     food_quality = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], default=3)
     timeliness = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], default=3)
-    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, null=False)
 
     def __str__(self):
         return str(self.food_quality) + "/5  food quality and " + str(self.timeliness) \
