@@ -3,10 +3,6 @@
     margin-right: auto;
 }
 
-.card:hover {
-	border: 2px #bfbfbf solid;
-  }
-
 .divL, .divR {
         box-sizing: border-box;
         padding: 10px;
