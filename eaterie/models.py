@@ -134,7 +134,7 @@ class Restaurant(models.Model):
             ratings = Review.objects.filter(order=o).values()
             for r in ratings:
                 actual_ratings += r['food_quality']
-                total_ratings += 5
+                total_ratings += 1
                 print(r)
         if total_ratings == 0:
             return "No Ratings Yet"
@@ -159,7 +159,7 @@ class Restaurant(models.Model):
             ratings = Review.objects.filter(order=o).values()
             for r in ratings:
                 actual_ratings += r['timeliness']
-                total_ratings += 5
+                total_ratings += 1
                 print(r)
         if total_ratings == 0:
             return "No Ratings Yet"
