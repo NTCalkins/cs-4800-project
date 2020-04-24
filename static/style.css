@@ -89,3 +89,92 @@ body {
   text-align: right;
   padding-right: 5%;
 }
+
+/*CSS for the badges*/
+[class *="badge-"] {
+  border-radius: 10px;
+  color: white;
+  display: inline-block;
+  font-size: 12px;
+  line-height: 1;
+  padding: 3px 7px;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.badge-onNav{
+  background-color: #00b4ff;
+}
+.badge-onPreview{
+  background-color: gray;
+}
+
+/*CSS mostly for the preview*/
+.nav-Cart{
+  position: relative;
+  display: inline-block;
+}
+.nav-Cart .nav-CartContents{
+  float:right;
+  visibility: hidden;
+  width: 320px;
+  background-color: white;
+  color: gray;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  top: 150%;
+  left: 50%;
+  margin-left: -270px;
+  /*Time to fade in completely*/
+  opacity: 0;
+  transition-delay: 1s;
+  transition: opacity 1s;
+  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+}
+.nav-Cart .nav-CartContents::after{
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 85%;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent white transparent;
+}
+.nav-Cart:hover .nav-CartContents{
+  transition-delay: 1s;
+  visibility: visible;
+  opacity: 1;
+}
+.nav-CartHeader{
+  color: gray;
+}
+.nav-CartTotal{
+  color: #00b4ff;
+}
+[call*="nav-CartBody-"]{
+  padding-top: 5px;
+}
+.nav-CartBody-li {
+  margin-bottom: 18px;
+  }
+.nav-CartBody-img{
+  float:left !important;
+  margin-left: 15px;
+}
+.nav-CartBody-item-name{
+  color:#000000;
+  display: block;
+  //padding-top:5px;
+  font-size:16px !important;
+}
+.nav-CartBody-item-price{
+  color: #0057B8 !important;
+  margin-right: 8px;
+}
+.nav-CartBody-item-quantity{
+  color: dimgray !important;
+}
+
