@@ -3,6 +3,23 @@
 {% load static %}
 {% block extra_head %}
     <link rel="stylesheet" href="{% static 'css/cart_view.css' %}">
+<script>
+    alert('Hello world');
+    $('.product-removal button').click(
+    function() {
+    removeItem(this);
+    });
+
+    /* Remove item from cart */
+function removeItem(removeButton)
+{
+  /* Remove row from DOM and recalc cart total */
+  var productRow = $(removeButton).parent().parent();
+  productRow.slideUp(fadeTime, function() {
+    productRow.remove();
+  });
+}
+</script>
 {% endblock %}
 
 {% block content %}
@@ -34,9 +51,13 @@
                                 </td>
                                 <td><p style="font-size:10px">{{ cart_entry.menu_item.description|truncatewords:40 }}</p></td>
 
-                                <td><input class="quantity" type="number" default="1" min="1" step="1" name="item_amount"/></td>
+                                <div>
+                                    <td><input class="quantity" type="number" default="1" min="1" step="1" name="item_amount"/></td>
+                                </div>
                                 <td><p>${{ cart_entry.menu_item.price }} each</p></td>
+                                <div class="product-removal">
                                 <td><button type="button" class="btn btn-danger">Remove</button></td>
+                                </div>
 
 
 
