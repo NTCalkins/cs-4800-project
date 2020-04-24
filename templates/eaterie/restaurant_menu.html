@@ -86,7 +86,7 @@
                                                                     {% csrf_token %}
                                                                     <input hidden type="text" name="mipk" value="{{ menu_item.pk }}" readonly>
                                                                 <label for="item_amount"> {{ menu_item.item_name }} quantity:</label><br>
-                                                                    <input type="number" default="1" min="1" step="1" name="item_amount"/>
+                                                                    <input type="number" value ="1" default="1" min="1" step="1" name="item_amount"/>
                                                                     <input type="submit" class="btn btn-primary" value="Add to cart" name="add_to_cart_button"/>
                                                                 </form>
                                                             </div>

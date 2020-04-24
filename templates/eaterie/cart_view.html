@@ -3,23 +3,7 @@
 {% load static %}
 {% block extra_head %}
     <link rel="stylesheet" href="{% static 'css/cart_view.css' %}">
-<script>
-    alert('Hello world');
-    $('.product-removal button').click(
-    function() {
-    removeItem(this);
-    });
 
-    /* Remove item from cart */
-function removeItem(removeButton)
-{
-  /* Remove row from DOM and recalc cart total */
-  var productRow = $(removeButton).parent().parent();
-  productRow.slideUp(fadeTime, function() {
-    productRow.remove();
-  });
-}
-</script>
 {% endblock %}
 
 {% block content %}
@@ -34,7 +18,7 @@ function removeItem(removeButton)
             <div class="card">
                 <div class="card-body">
                         <table class="table table-striped">
-                        <thead>
+                        <thead class="cart-rows">
                         <tr>
                             <th>Item</th>
                             <th class="text-center">Description</th>
@@ -43,7 +27,7 @@ function removeItem(removeButton)
                             <th class="text-center">Remove</th>
                         </tr>
                         </thead>
-                            <tbody>
+                            <tbody class="cart-items">
                             <tr>
                                 <td>
                                     <h4>{{ cart_entry }}</h4>
@@ -52,9 +36,11 @@ function removeItem(removeButton)
                                 <td><p style="font-size:10px">{{ cart_entry.menu_item.description|truncatewords:40 }}</p></td>
 
                                 <div>
-                                    <td><input class="quantity" type="number" default="1" min="1" step="1" name="item_amount"/></td>
+                                    <td><input class="cart-quantity-input" type="number" value="{{ cart_entry.quantity }}" min="1" step="1" name="item_amount"/></td>
                                 </div>
+                                <div class="cart-price">
                                 <td><p>${{ cart_entry.menu_item.price }} each</p></td>
+                                </div>
                                 <div class="product-removal">
                                 <td><button type="button" class="btn btn-danger">Remove</button></td>
                                 </div>
@@ -70,7 +56,7 @@ function removeItem(removeButton)
     </div>
 </div>
     {% endfor %}
-    <h1 class="text-center">Total cost: ${{ user.customer.cart.calculate_total_cost}}</h1>
+    <h1 class="text-center cart-total">Total cost: ${{ user.customer.cart.calculate_total_cost}}</h1>
     <div style="text-align:center">
     <button type="button" data-toggle="modal" data-target="#modal-checkout" class="btn btn-success checkoutButton">
         <i class="fa fa-shopping-cart cart-icon"></i> Check Out</button>
@@ -97,5 +83,61 @@ function removeItem(removeButton)
             </div>
         </div>
     </div>
+<script>
+    if (document.readyState == 'loading') {
+    document.addEventListener('DOMContentLoaded', ready)
+} else {
+    ready()
+}
+
+function ready() {
+    var removeCartItemButtons = document.getElementsByClassName('btn-danger')
+    for (var i = 0; i < removeCartItemButtons.length; i++) {
+        var button = removeCartItemButtons[i]
+        button.addEventListener('click', removeCartItem)
+    }
+
+    var quantityInputs = document.getElementsByClassName('cart-quantity-input')
+    for (var i = 0; i < quantityInputs.length; i++) {
+        var input = quantityInputs[i]
+        input.addEventListener('change', quantityChanged)
+    }
+
+    document.getElementsByClassName('btn-purchase')[0].addEventListener('click', purchaseClicked)
+}
+
+function removeCartItem(event) {
+    var buttonClicked = event.target
+    // each parentElement removes another element that the button inherits from
+    buttonClicked.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.remove()
+    updateCartTotal()
+}
+
+function quantityChanged(event) {
+    var input = event.target
+    if (isNaN(input.value) || input.value <= 0) {
+        input.value = 1
+    }
+    updateCartTotal()
+}
+/*
+function updateCartTotal() {
+    var cartItemContainer = document.getElementsByClassName('cart-items')[0]
+    var cartRows = cartItemContainer.getElementsByClassName('cart-row')
+    var total = 0
+    for (var i = 0; i < cartRows.length; i++) {
+        var cartRow = cartRows[i]
+        var priceElement = cartRow.getElementsByClassName('cart-price')[0]
+        var quantityElement = cartRow.getElementsByClassName('cart-quantity-input')[0]
+        var price = parseFloat(priceElement.innerText.replace('$', ''))
+        var quantity = quantityElement.value
+        total = total + (price * quantity)
+    }
+    total = Math.round(total * 100) / 100
+    document.getElementsByClassName('{{ user.customer.cart.calculate_total_cost}}')[0].innerText = '$' + total
+}
+}
+*/
+</script>
     {% endif %}
 {% endblock %}
