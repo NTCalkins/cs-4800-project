@@ -94,7 +94,7 @@ class Restaurant(models.Model):
     image_file = models.ImageField(default='no-image-available.png', blank=True)
     description = models.TextField(max_length=256, blank=True)
     zip_code = models.ForeignKey(ZipCode, on_delete=models.SET_NULL, blank=True, null=True)
-    user = models.OneToOneField(CustomUserModel, on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUserModel, on_delete=models.CASCADE, default=0)
 
     def __str__(self):
         return self.restaurant_name
@@ -123,6 +123,27 @@ class Restaurant(models.Model):
                 return "$$$"
             else:
                 return "$$$$"
+
+    def get_food_quality(self):
+        ratings = Review.objects.filter(restaurant=self)
+        total_ratings = 0
+        actual_ratings = 0
+        for r in ratings:
+            actual_ratings += r
+            total_ratings += 5
+        average = total_ratings / actual_ratings
+        if average == 0:
+            return "No Ratings Yet"
+        if average == 1:
+            return "★"
+        if average == 2:
+            return "★★"
+        if average == 3:
+            return "★★★"
+        if average == 4:
+            return "★★★★"
+        else:
+            return "★★★★★"
 
 
 class Customer(models.Model):
@@ -278,7 +299,7 @@ class Cart(models.Model):
                 item_exists = CartEntry.objects.get(cart=self, menu_item=item)
                 item_exists.quantity += amount
                 item_exists.save()
-            except CartEntry.DoesNotExist:  #create a new cart entry with this item
+            except CartEntry.DoesNotExist:  # create a new cart entry with this item
                 new_entry = CartEntry.objects.create(cart=self, menu_item=item, quantity=amount)
                 new_entry.save()
         except ObjectDoesNotExist:  # checks that the item is reachable
@@ -330,7 +351,7 @@ class Cart(models.Model):
                     cart_entry.delete()
                     new_order_item.save()
 
-        #
+
         # self.order_date = datetime.now()
         # new_order = Order.objects.create(customer=self.customer, order_date=self.order_date)
         # new_order.save()
@@ -343,11 +364,12 @@ class Cart(models.Model):
 
 
 class Review(models.Model):
-    order = models.OneToOneField(Order,on_delete=models.CASCADE, null=True)
-    comment = models.TextField(max_length=512,blank=True)
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, null=True)
+    comment = models.TextField(max_length=512, blank=True)
     food_quality = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], default=3)
     timeliness = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], default=3)
+    restaurant = models.ForeignKey('Restaurant', on_delete=models.CASCADE, null=False)
 
     def __str__(self):
-        return str(self.food_quality) +"/5  food quality and " + str(self.timeliness) \
+        return str(self.food_quality) + "/5  food quality and " + str(self.timeliness) \
                + "/5 timeliness for " + str(self.order.restaurant)
