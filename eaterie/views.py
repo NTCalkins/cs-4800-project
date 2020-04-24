@@ -38,6 +38,7 @@ class CustomerHomeView(ListView):
     template_name = 'eaterie/customer_home.html'
     context_object_name = 'restaurants'
     paginate_by = 10
+    ordering = ['id']
 
     def get_context_data(self, **kwargs):
         context = super(CustomerHomeView, self).get_context_data(**kwargs)
