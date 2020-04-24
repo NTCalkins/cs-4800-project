@@ -206,7 +206,9 @@ class Order(models.Model):
         return date_aware.strftime("%X")
 
     def get_review(self):
-        return Review.objects.get(order=self)
+        review = Review.objects.get(order=self)
+        print(review.pk)
+        return review
 
 
 class OrderItem(models.Model):
@@ -342,7 +344,7 @@ class Cart(models.Model):
 
 class Review(models.Model):
     order = models.OneToOneField(Order,on_delete=models.CASCADE, null=True)
-    comment = models.TextField(max_length=512)
+    comment = models.TextField(max_length=512,blank=True)
     food_quality = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], default=3)
     timeliness = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], default=3)
 
