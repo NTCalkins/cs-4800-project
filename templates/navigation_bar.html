@@ -36,12 +36,39 @@
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'eaterie:cart_view' %}">
-                            <i class="fa fa-shopping-cart cart-icon"></i> Cart
-                            <!--<span class="badge">0</span>-->
+                        <a class="nav-link" href="{% url 'eaterie:cart_view'%}">
+                            <div class="nav-Cart">
+                                <i class="fa fa-shopping-cart cart-icon"></i> Cart
+                                <span class="badge-onNav" id="badgeNum">{{ user.customer.cart.get_cart_quantity }}</span>
+                                <ul class="nav-CartContents" style="list-style: none;">
+                                    <div class="nav-CartHeader">
+                                        <i class="fa fa-shopping-cart cart-icon"></i> <span class="badge-onPreview" id="badgeNum">{{ user.customer.cart.get_cart_quantity }}</span>
+                                        <span class="nav-CartTotal"> Total: <span id="previewTotal">${{ user.customer.cart.calculate_total_cost}}</span></span>
+                                        <hr width="80%">
+                                    </div>
+                                    <div class="nav-CartBody">
+                                        {% if  not user.customer.cart.cartentry_set.all %}
+                                            Your cart is empty!
+                                        {% else %}
+                                        {% for cart_entry in user.customer.cart.cartentry_set.all %}
+                                            <li class="nav-CartBody-li">
+                                            <span class="nav-CartBody-img">
+                                                <img src="{{ cart_entry.menu_item.image_file.url }}" height="50" alt="Item img">
+                                            </span>
+                                            <span class="nav-CartBody-item-name">{{ cart_entry.menu_item.item_name }}</span>
+                                            <span class="nav-CartBody-item-price">${{ cart_entry.menu_item.price }} ea.</span>
+                                            <span class="nav-CartBody-item-quantity">Quantity: {{ cart_entry.quantity }}</span>
+                                            </li>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                </ul>
+                            </div>
                         </a>
-                     </li>
-                    {% endif %}
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
 
                     {% if user.is_restaurant %}
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
