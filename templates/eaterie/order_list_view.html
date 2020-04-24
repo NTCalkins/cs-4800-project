@@ -7,26 +7,29 @@
 {% block content %}
     <h1>Orders</h1>
     {% if order_list %}
-    <ul>
     {% for order in order_list %}
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-body">
-                <h4>{{ order }}</h4>
-                 <p>${{ order.get_total_cost }} total cost</p>
-                <p> Order made at {{ order.get_time }} on {{ order.get_date }}</p>
-                <div class = "container">
-                    <div class="divL">
-                        <a class="btn btn-primary" href="{% url 'eaterie:order_detail_view' user.pk order.pk %}">More Details</a>
+        <div class="card" style="margin: 40px">
+            <div class="row">
+                <div class="col-sm-5" style="margin: 20px">
+
+                    <h4>{{ order }}</h4>
+                     <p>${{ order.get_total_cost }} total cost</p>
+                    <p> Order made at {{ order.get_time }} on {{ order.get_date }}</p>
+                    <div class = "container">
+                        <div class="divL">
+                            <a class="btn btn-primary" href="{% url 'eaterie:order_detail_view' user.pk order.pk %}">More Details</a>
+                        </div>
+                        <div class="divR">
+                            <a class="btn btn-primary" href="{% url 'eaterie:review_update_form' pk=user.pk pk_review=order.get_review.pk %}">Leave a Review</a>
+                        </div>
                     </div>
-                    <div class="divR">
-                        <a class="btn btn-primary" href="{% url 'eaterie:review_update_form' pk=user.pk pk_review=order.get_review.pk %}">Leave a Review</a>
-                    </div>
+                </div>
+                <div class="col-sm-3" style="margin: 20px">
+                    <img src="{{ order.restaurant.image_file.url }}" height="100">
                 </div>
             </div>
         </div>
-        </div>
+        <p></p>
     {% endfor %}
-    </ul>
     {% endif %}
 {% endblock %}

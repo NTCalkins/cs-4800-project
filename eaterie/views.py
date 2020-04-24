@@ -193,7 +193,7 @@ class OrderDetailView(DetailView):
 class ReviewUpdate(UpdateView):
     model = Review
     pk_url_kwarg = 'pk_review'
-    fields = '__all__'
+    fields = ['comment','food_quality', 'timeliness']
     template_name = 'eaterie/review_update_form.html'
 
     def get_success_url(self):

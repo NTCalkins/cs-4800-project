@@ -4,7 +4,9 @@
 {% block content %}
     <h1>{{ order }} on {{ order.get_date }} at {{ order.get_time }}</h1>
     {% if not order.order_cancelled %}
-        <span class="badge badge-success"> This order is in progress</span>
+        <div style="margin: 30px">
+            <span class="badge badge-success"> This order is in progress</span>
+        </div>
     {% else %}
         <span class="label label-important"> This order has been cancelled</span>
     {% endif %}

@@ -34,7 +34,6 @@
                             <!--<a class="dropdown-item" href="{% url 'eaterie:cart_view' %}">My Reviews</a>-->
                             <a class="dropdown-item" href="{% url 'account_logout' %}">Sign out</a>
                         </div>
-                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'eaterie:cart_view'%}">
                             <div class="nav-Cart">
@@ -67,8 +66,6 @@
                         </a>
                     </li>
                 {% endif %}
-            </ul>
-        </div>
 
                     {% if user.is_restaurant %}
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -83,7 +80,6 @@
                                 Menu</a>
                             <a class="dropdown-item" href="{% url 'account_logout' %}">Sign out</a>
                         </div>
-                    </li>
                     {% endif %}
             {% else %}
             <li class="nav-item active">

@@ -172,7 +172,7 @@ class MenuItem(models.Model):
     category = models.ForeignKey(MenuCategory, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.item_name + "(s) from " + self.category.restaurant.restaurant_name;
+        return self.item_name + " from " + self.category.restaurant.restaurant_name;
 
 
 class Order(models.Model):
@@ -220,7 +220,7 @@ class OrderItem(models.Model):
         unique_together = ('order', 'menu_item')
 
     def __str__(self):
-        return str(self.quantity) + " units of " + str(self.menu_item)
+        return str(self.quantity) + " unit(s) of " + str(self.menu_item)
 
     def get_price(self):
         return self.menu_item.price * self.quantity
