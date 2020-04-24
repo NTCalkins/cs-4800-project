@@ -3,10 +3,12 @@ from django.contrib.admin import ModelAdmin, TabularInline
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import ugettext_lazy as _
 
-from eaterie.models import CustomUserModel, Restaurant, Customer, MenuCategory, State, City, ZipCode, MenuItem, CartEntry, Cart
+from eaterie.models import CustomUserModel, Restaurant, Customer, MenuCategory, State, City, ZipCode, MenuItem, \
+    CartEntry, Cart, Review
 
 admin.site.register(CartEntry)
 admin.site.register(Cart)
+admin.site.register(Review)
 
 @admin.register(CustomUserModel)
 class CustomUserAdmin(UserAdmin):

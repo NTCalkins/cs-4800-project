@@ -7,13 +7,14 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView, UpdateView, DetailView, ListView
+from django.views.generic.list import MultipleObjectMixin
 from nested_formset import nestedformset_factory
 
 from eaterie.decorators import (customer_required, restaurant_required, user_identity_check,
                                 restaurant_owner_identity_check)
 from eaterie.forms import (CustomerSignUpForm, RestaurantSignUpForm, CustomerUpdateForm, RestaurantUpdateForm,
                            RestaurantSearchForm)
-from eaterie.models import Restaurant, CustomUserModel, MenuCategory, MenuItem, Customer, Cart, CartEntry, Order
+from eaterie.models import Restaurant, CustomUserModel, MenuCategory, MenuItem, Customer, Cart, CartEntry, Order, Review
 
 
 def login_redirect(request):
@@ -172,17 +173,24 @@ class CartView(TemplateView):
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(customer_required, name='dispatch')
-class OrderListView(ListView):
+class OrderListView(ListView, MultipleObjectMixin):
     model = Order
+    paginate_by = 5
     template_name = 'eaterie/order_list_view.html'
 
-
     def get_queryset(self):
-        return Order.objects.filter(customer=self.request.user.customer)
+        return Order.objects.filter(customer=self.request.user.customer).order_by('-order_date')
 
 @method_decorator(user_identity_check, name='dispatch')
 @method_decorator(customer_required, name='dispatch')
 class OrderDetailView(DetailView):
     model = Order
     template_name = 'eaterie/order_detail_view.html'
+
+
+class ReviewUpdate(UpdateView):
+    model= Review
+    fields = '__all__'
+    template_name = 'eaterie/review_update.html'
+
 

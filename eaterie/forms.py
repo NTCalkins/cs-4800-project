@@ -6,7 +6,8 @@ from django.db import transaction
 from django.forms import ModelForm
 from django.utils.translation import ugettext_lazy as _
 
-from eaterie.models import CustomUserModel, Restaurant, Customer, ZipCode
+from eaterie.models import CustomUserModel, Restaurant, Customer, \
+    ZipCode, Review
 
 
 class CustomerSignUpForm(UserCreationForm):
