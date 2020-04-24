@@ -15,7 +15,7 @@
                         <a class="btn btn-primary" href="{% url 'eaterie:order_detail_view' user.pk order.pk %}">More Details</a>
                     </div>
                     <div class="divR">
-                        <a class="btn btn-primary" href="">Leave a Review</a>
+                        <a class="btn btn-primary" href="{% url 'eaterie:review_update_form' user.pk order.get_review.pk %}">Leave a Review</a>
                     </div>
                 </div>
             </div>

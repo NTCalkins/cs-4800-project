@@ -110,9 +110,19 @@ class Restaurant(models.Model):
                 total_items += 1
                 print(f)
         if total_items == 0:
-            return 0
+            return "Not enough data for average price"
         else:
-            return int(total_price / total_items)
+            average = int(total_price / total_items)
+            '''Everything below this designates the difference
+            in average price values that will return $, $$, etc.'''
+            if average <= 10:
+                return "$"
+            if 10 < average <= 20:
+                return "$$"
+            if 20 < average <= 30:
+                return "$$$"
+            else:
+                return "$$$$"
 
 
 class Customer(models.Model):
@@ -174,7 +184,7 @@ class Order(models.Model):
     order_cancelled = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.restaurant.restaurant_name + " order made at: " + str(self.order_date)
+        return "Order from " + self.restaurant.restaurant_name
 
     def get_total_cost(self):
         order_items = OrderItem.objects.filter(order=self)
@@ -194,6 +204,9 @@ class Order(models.Model):
         timezone = pytz.timezone("America/Los_Angeles")
         date_aware = date.astimezone(timezone)
         return date_aware.strftime("%X")
+
+    def get_review(self):
+        return Review.objects.get(order=self)
 
 
 class OrderItem(models.Model):
@@ -243,6 +256,13 @@ class Cart(models.Model):
         sum = 0
         for entry in cart_entries:
             sum += CartEntry.get_price(entry)
+        return sum
+
+    def get_cart_quantity(self):
+        cart_entries = CartEntry.objects.filter(cart=self)
+        sum = 0
+        for entry in cart_entries:
+            sum += entry.quantity
         return sum
 
     def add_cart_item(self, menu_item_id, amount):
@@ -299,6 +319,8 @@ class Cart(models.Model):
         for restaurant in restaurants:
             new_order = Order.objects.create(customer=self.customer, restaurant=restaurant)
             new_order.save()
+            new_review = Review.objects.create(order=new_order)
+            new_review.save()
             for cart_entry in cart_entries:
                 if cart_entry.menu_item.category.restaurant == restaurant:
                     new_order_item = OrderItem.objects.create(order=new_order, quantity=cart_entry.quantity,
@@ -319,9 +341,11 @@ class Cart(models.Model):
 
 
 class Review(models.Model):
-    order = models.OneToOneField(Order,on_delete=models.CASCADE, primary_key=True)
+    order = models.OneToOneField(Order,on_delete=models.CASCADE, null=True)
     comment = models.TextField(max_length=512)
     food_quality = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], default=3)
     timeliness = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], default=3)
 
-
+    def __str__(self):
+        return str(self.food_quality) +"/5  food quality and " + str(self.timeliness) \
+               + "/5 timeliness for " + str(self.order.restaurant)
