@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'crispy_forms',
     # ... include the providers you want to enable: to be added
 
     # local app:
@@ -55,6 +56,8 @@ INSTALLED_APPS = [
     'betterforms',  # used for combining multiple forms, pretty sleek
     'widget_tweaks',
 ]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
