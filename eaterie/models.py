@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 from datetime import datetime
@@ -124,18 +125,20 @@ class Restaurant(models.Model):
             else:
                 return "$$$$"
 
+    @python_2_unicode_compatible
     def get_food_quality(self):
         total_ratings = 0
         actual_ratings = 0
         orders = Order.objects.filter(restaurant=self)
-	for o in orders:
-		ratings = Review.objects.filter(order=o).values()
-		for r in ratings:
-            		actual_ratings += r
-           		 total_ratings += 5
-        average = int(actual_ratings / total_ratings)
-        if average == 0:
+        for o in orders:
+            ratings = Review.objects.filter(order=o).values()
+            for r in ratings:
+                actual_ratings += r['food_quality']
+                total_ratings += 5
+                print(r)
+        if total_ratings == 0:
             return "No Ratings Yet"
+        average = int(actual_ratings / total_ratings)
         if average == 1:
             return "★"
         if average == 2:
@@ -147,18 +150,20 @@ class Restaurant(models.Model):
         else:
             return "★★★★★"
 
+    @python_2_unicode_compatible
     def get_timeliness(self):
-        otal_ratings = 0
+        total_ratings = 0
         actual_ratings = 0
         orders = Order.objects.filter(restaurant=self)
-	for o in orders:
-		ratings = Review.objects.filter(order=o).values()
-		for r in ratings:
-            		actual_ratings += r
-           		 total_ratings += 5
-        average = int(actual_ratings / total_ratings)
-        if average == 0:
+        for o in orders:
+            ratings = Review.objects.filter(order=o).values()
+            for r in ratings:
+                actual_ratings += r['timeliness']
+                total_ratings += 5
+                print(r)
+        if total_ratings == 0:
             return "No Ratings Yet"
+        average = int(actual_ratings / total_ratings)
         if average == 1:
             return "★"
         if average == 2:
@@ -219,11 +224,11 @@ class MenuItem(models.Model):
     category = models.ForeignKey(MenuCategory, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.item_name + "(s) from " + self.category.restaurant.restaurant_name;
+        return self.item_name + "(s) from " + self.category.restaurant.restaurant_name
 
 
 class Order(models.Model):
-    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, default=1)
+    restaurant = models.ForeignKey('Restaurant', on_delete=models.CASCADE, default=1)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     order_date = models.DateTimeField(auto_now_add=True)
     special_instruction = models.CharField(max_length=512, blank=True)
@@ -390,7 +395,7 @@ class Cart(models.Model):
 
 
 class Review(models.Model):
-    order = models.OneToOneField(Order, on_delete=models.CASCADE, null=True)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True)
     comment = models.TextField(max_length=512, blank=True)
     food_quality = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], default=3)
     timeliness = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], default=3)
