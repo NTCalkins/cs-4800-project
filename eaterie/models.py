@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 from datetime import datetime
@@ -94,7 +95,7 @@ class Restaurant(models.Model):
     image_file = models.ImageField(default='no-image-available.png', blank=True)
     description = models.TextField(max_length=256, blank=True)
     zip_code = models.ForeignKey(ZipCode, on_delete=models.SET_NULL, blank=True, null=True)
-    user = models.OneToOneField(CustomUserModel, on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUserModel, on_delete=models.CASCADE, default=0)
 
     def __str__(self):
         return self.restaurant_name
@@ -124,6 +125,56 @@ class Restaurant(models.Model):
             else:
                 return "$$$$"
 
+    @python_2_unicode_compatible
+    def get_food_quality(self):
+        total_ratings = 0
+        actual_ratings = 0
+        orders = Order.objects.filter(restaurant=self)
+        for o in orders:
+            ratings = Review.objects.filter(order=o).values()
+            for r in ratings:
+                actual_ratings += r['food_quality']
+                total_ratings += 1
+                print(r)
+        if total_ratings == 0:
+            return "No Ratings Yet"
+        average = int(actual_ratings / total_ratings)
+        if average == 1:
+            return "★"
+        if average == 2:
+            return "★★"
+        if average == 3:
+            return "★★★"
+        if average == 4:
+            return "★★★★"
+        else:
+            return "★★★★★"
+
+    @python_2_unicode_compatible
+    def get_timeliness(self):
+        total_ratings = 0
+        actual_ratings = 0
+        orders = Order.objects.filter(restaurant=self)
+        for o in orders:
+            ratings = Review.objects.filter(order=o).values()
+            for r in ratings:
+                actual_ratings += r['timeliness']
+                total_ratings += 1
+                print(r)
+        if total_ratings == 0:
+            return "No Ratings Yet"
+        average = int(actual_ratings / total_ratings)
+        if average == 1:
+            return "★"
+        if average == 2:
+            return "★★"
+        if average == 3:
+            return "★★★"
+        if average == 4:
+            return "★★★★"
+        else:
+            return "★★★★★"
+
 
 class Customer(models.Model):
     customer_address = models.CharField(max_length=256, blank=True)
@@ -132,9 +183,10 @@ class Customer(models.Model):
     user = models.OneToOneField(CustomUserModel, on_delete=models.CASCADE)
     PREFERENCE_CHOICES = [
         ('ITA', 'Italian'),
-        ('FF', 'Fastfood'),
+        ('FF', 'Fast Food'),
         ('CHN', 'Chinese'),
-        ('VTN', 'Vietnamese')
+        ('VTN', 'Vietnamese'),
+        ('MEX', 'Mexican'),
     ]
     preference_1 = models.CharField(max_length=64, choices=PREFERENCE_CHOICES, default='ITA')
     preference_2 = models.CharField(max_length=64, choices=PREFERENCE_CHOICES, default='VTN')
@@ -172,11 +224,11 @@ class MenuItem(models.Model):
     category = models.ForeignKey(MenuCategory, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.item_name + " from " + self.category.restaurant.restaurant_name;
+        return self.item_name + "(s) from " + self.category.restaurant.restaurant_name
 
 
 class Order(models.Model):
-    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, default=1)
+    restaurant = models.ForeignKey('Restaurant', on_delete=models.CASCADE, default=1)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     order_date = models.DateTimeField(auto_now_add=True)
     special_instruction = models.CharField(max_length=512, blank=True)
@@ -197,13 +249,13 @@ class Order(models.Model):
         date = self.order_date
         timezone = pytz.timezone("America/Los_Angeles")
         date_aware = date.astimezone(timezone)
-        return date_aware.strftime("%B") + " " + date_aware.strftime("%d") + ", " +date_aware.strftime("%Y")
+        return date_aware.strftime("%x")
 
     def get_time(self):
         date = self.order_date
         timezone = pytz.timezone("America/Los_Angeles")
         date_aware = date.astimezone(timezone)
-        return date_aware.strftime("%I") + ":" + date_aware.strftime("%M") + " " + date_aware.strftime("%p")
+        return date_aware.strftime("%X")
 
     def get_review(self):
         review = Review.objects.get(order=self)
@@ -220,7 +272,7 @@ class OrderItem(models.Model):
         unique_together = ('order', 'menu_item')
 
     def __str__(self):
-        return str(self.quantity) + " unit(s) of " + str(self.menu_item)
+        return str(self.quantity) + " units of " + str(self.menu_item)
 
     def get_price(self):
         return self.menu_item.price * self.quantity
@@ -278,7 +330,7 @@ class Cart(models.Model):
                 item_exists = CartEntry.objects.get(cart=self, menu_item=item)
                 item_exists.quantity += amount
                 item_exists.save()
-            except CartEntry.DoesNotExist:  #create a new cart entry with this item
+            except CartEntry.DoesNotExist:  # create a new cart entry with this item
                 new_entry = CartEntry.objects.create(cart=self, menu_item=item, quantity=amount)
                 new_entry.save()
         except ObjectDoesNotExist:  # checks that the item is reachable
@@ -330,7 +382,7 @@ class Cart(models.Model):
                     cart_entry.delete()
                     new_order_item.save()
 
-        #
+
         # self.order_date = datetime.now()
         # new_order = Order.objects.create(customer=self.customer, order_date=self.order_date)
         # new_order.save()
@@ -343,11 +395,11 @@ class Cart(models.Model):
 
 
 class Review(models.Model):
-    order = models.OneToOneField(Order,on_delete=models.CASCADE, null=True)
-    comment = models.TextField(max_length=512,blank=True)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True)
+    comment = models.TextField(max_length=512, blank=True)
     food_quality = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], default=3)
     timeliness = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], default=3)
 
     def __str__(self):
-        return str(self.food_quality) +"/5  food quality and " + str(self.timeliness) \
+        return str(self.food_quality) + "/5  food quality and " + str(self.timeliness) \
                + "/5 timeliness for " + str(self.order.restaurant)
