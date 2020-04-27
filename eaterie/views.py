@@ -162,7 +162,6 @@ class CartView(TemplateView):
     def post(self, request, *args, **kwargs):
         customer = self.request.user.customer
         si = request.POST['special_instructions']
-        print(si)
         cart = Cart.objects.get(customer=customer)
         print("Emptying cart of " + str(cart.customer))
         new_order = Cart.checkout(cart)

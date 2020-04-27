@@ -6,7 +6,7 @@
 {% load widget_tweaks %}
 {% block content %}
     <div class="container" style="padding-bottom: 20px;">
-        <h1 class="d-flex justify-content-center" style="padding-top: 10px; color: #0057B8;">Welcome back, {{ user.first_name }}!</h1>
+        <h1 class="d-flex justify-content-center" style="padding-top: 10px; color: #0057B8;">Welcome back, {{ user.get_first_name }}!</h1>
         <form action="">
             <div class="input-group justify-content-center">
                 {% for field in form.visible_fields %}
@@ -26,12 +26,12 @@
                 {% for restaurant in restaurants %}
                     <div class="w-25 h-25 card text-center">
                         <a href="{% url 'eaterie:restaurant_menu' restaurant.pk %}" class="list-group-item list-group-item-action list-group-item-light">
-                            <img src="{{ restaurant.image_file.url }}" class="card-img-top rounded mx-auto d-block" alt="Restaurant Image" style="width: 10rem;">
+                            <img src="{{ restaurant.get_image_file.url }}" class="card-img-top rounded mx-auto d-block" alt="Restaurant Image" style="width: 10rem;">
                         <div class="card-body">
-                            <h5 class="card-title" style="color: rgba(0, 0, 0, 1);">{{ restaurant.restaurant_name }}</h5>
-                            <p>{% if restaurant.restaurant_address %}
-                            {{ restaurant.restaurant_address }}<br>
-                            {% endif %}<b>Phone:</b> {{ restaurant.phone_number }}</p>
+                            <h5 class="card-title" style="color: rgba(0, 0, 0, 1);">{{ restaurant.get_name }}</h5>
+                            <p>{% if restaurant.get_address %}
+                            {{ restaurant.get_address }}<br>
+                            {% endif %}<b>Phone:</b> {{ restaurant.get_phone_number }}</p>
                         </div>
                         <div class="card-body text-center" style="border-top: 1px solid rgba(0,0,0,.1);">
                              {{ restaurant.get_food_quality }} - {{ restaurant.get_average_price }}
@@ -110,12 +110,16 @@
             {% for restaurant in restaurants|slice:":6" %}
                 <div class="w-25 h-25 card text-center">
                         <a href="{% url 'eaterie:restaurant_menu' restaurant.pk %}" class="list-group-item list-group-item-action list-group-item-light">
-                            <img src="{{ restaurant.image_file.url }}" class="card-img-top rounded mx-auto d-block" alt="Restaurant Image" style="width: 10rem;">
+                            <img src="{{ restaurant.get_image_file.url }}" class="card-img-top rounded mx-auto d-block" alt="Restaurant Image" style="width: 10rem;">
                         <div class="card-body">
-                            <h5 class="card-title" style="color: rgba(0, 0, 0, 1);">{{ restaurant.restaurant_name }}</h5>
-                            <p>{% if restaurant.restaurant_address %}
-                            {{ restaurant.restaurant_address }}<br>
-                            {% endif %}<b>Phone:</b> {{ restaurant.phone_number }}</p>
+                            <h5 class="card-title" style="color: rgba(0, 0, 0, 1);">{{ restaurant.get_name }}</h5>
+                            <p>{% if restaurant.get_address %}
+                            {{ restaurant.get_address }}<br>
+                                {% else %}
+                                 No street address available<br>
+                            {% endif %}
+                                {{ restaurant.get_zip_code.get_zip_city_state }}
+                                <b>Phone:</b> {{ restaurant.get_phone_number }}</p>
                         </div>
                         <div class="card-body text-center" style="border-top: 1px solid rgba(0,0,0,.1);">
                             {{ restaurant.get_food_quality }} - {{ restaurant.get_average_price }}

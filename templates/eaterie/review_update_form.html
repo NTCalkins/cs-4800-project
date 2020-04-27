@@ -4,7 +4,7 @@
 
 {% block content %}
     <div style="margin: 100px">
-    <h1> Leave a review for {{ review.order.restaurant }}!</h1>
+    <h1> Leave a review for {{ review.get_order.get_restaurant }}!</h1>
     <form method="post">{% csrf_token %}
         {{ form|crispy }}
         <input type="submit" value="Update">

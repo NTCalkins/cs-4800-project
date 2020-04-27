@@ -8,10 +8,10 @@
 
 {% block content %}
     <h1>Shopping Cart</h1>
-    {% if  not user.customer.cart.cartentry_set.all %}
+    {% if  not user.customer.get_cart.get_cart_entries %}
         <h1>Your cart is empty!</h1>
     {% else %}
-    {% for cart_entry in user.customer.cart.cartentry_set.all %}
+    {% for cart_entry in user.customer.get_cart.get_cart_entries %}
 <div class="container">
     <div class="row"></div>
         <div class="col-md-12">
@@ -31,15 +31,15 @@
                             <tr>
                                 <td>
                                     <h4>{{ cart_entry }}</h4>
-                                    <img src="{{ cart_entry.menu_item.image_file.url }}" height="100" alt="">
+                                    <img src="{{ cart_entry.get_menu_item.get_image_file.url }}" height="100" alt="">
                                 </td>
-                                <td><p style="font-size:10px">{{ cart_entry.menu_item.description|truncatewords:40 }}</p></td>
+                                <td><p style="font-size:10px">{{ cart_entry.get_menu_item.get_description|truncatewords:40 }}</p></td>
 
                                 <div>
-                                    <td><input class="cart-quantity-input" type="number" value="{{ cart_entry.quantity }}" min="1" step="1" name="item_amount"/></td>
+                                    <td><input class="cart-quantity-input" type="number" value="{{ cart_entry.get_quantity }}" min="1" step="1" name="item_amount"/></td>
                                 </div>
                                 <div class="cart-price">
-                                <td><p>${{ cart_entry.menu_item.price }} each</p></td>
+                                <td><p>${{ cart_entry.get_menu_item.get_price }} each</p></td>
                                 </div>
                                 <div class="product-removal">
                                 <td><button type="button" class="btn btn-danger">Remove</button></td>
@@ -56,7 +56,7 @@
     </div>
 </div>
     {% endfor %}
-    <h1 class="text-center cart-total">Total cost: ${{ user.customer.cart.calculate_total_cost}}</h1>
+    <h1 class="text-center cart-total">Total cost: ${{ user.customer.get_cart.calculate_total_cost}}</h1>
     <div style="text-align:center">
     <button type="button" data-toggle="modal" data-target="#modal-checkout" class="btn btn-success checkoutButton">
         <i class="fa fa-shopping-cart cart-icon"></i> Check Out</button>
@@ -69,7 +69,7 @@
                     <h5>Are You Sure You're Ready to Order?</h5>
                 </div>
                 <div class="modal-body">
-                    <p> {{ user.customer.cart.calculate_total_cost }}</p>
+                    <p> TODO PUT SOMETHING HERE</p>
                     <form method="POST">
                         {% csrf_token %}
                         <label for="special_instructions">Special Instructions:</label>
