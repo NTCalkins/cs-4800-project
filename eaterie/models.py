@@ -154,6 +154,17 @@ class Restaurant(models.Model):
     def get_user(self):
         return self.user
 
+    def get_orders(self):
+        return Order.objects.filter(restaurant=self)
+
+    def get_cancelled_orders_percentage(self):
+        orders = self.get_orders()
+        total_orders = orders.count()
+        cancel_orders = orders.filter(order_cancelled=True).count()
+        if cancel_orders == 0:
+            return 0
+        return (cancel_orders/total_orders * 100)
+
     def get_average_price(self):
         categories = MenuCategory.objects.filter(restaurant=self)
         total_price = 0

@@ -19,6 +19,7 @@ DATABASES = {
 }
 
 # media files: media, GIFs, videos, etc.
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 MEDIA_URL = '/static/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
 

@@ -14,8 +14,9 @@
         <li class="list-group-item">
             <div class="container">
                 <h1>{{ restaurant.get_name }}</h1>
+                {{ restaurant.get_zip_code.get_zip_city_state }}
                 {% if restaurant.get_address %}
-                <p>Address: {{ restaurant.get_address }} </p>
+                <p>{{ restaurant.get_address }} </p>
                 {% endif %}
                 <p>Phone number: {{ restaurant.get_phone_number }}</p>
             </div>
@@ -27,7 +28,13 @@
         </li>
         <li class="list-group-item">
             <div class="container">
-                <p>Restaurant Rating, etc...</p>
+                <p>
+                    {{ restaurant.get_food_quality }}
+                </p>
+                <p>
+                    {{ restaurant.get_average_price }}
+                </p>
+                    This restaurant cancels {{ restaurant.get_cancelled_orders_percentage|floatformat }}% of their orders!
             </div>
 
         </li>
