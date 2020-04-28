@@ -3,23 +3,26 @@
 
 {% block content %}
     <h1>{{ order }} on {{ order.get_date }} at {{ order.get_time }}</h1>
-    {% if not order.order_cancelled %}
-        <span class="badge badge-success"> This order is in progress</span>
+    {% if not order.is_cancelled %}
+        <div style="margin: 30px">
+            <span class="badge badge-success"> This order is in progress</span>
+        </div>
     {% else %}
         <span class="label label-important"> This order has been cancelled</span>
     {% endif %}
-    {% for order_item in order.orderitem_set.all %}
+    {{ order.get_special_instruction }}
+    {% for order_item in order.get_order_items %}
         <div class="col-md-6">
         <div class="card">
             <div class="card-body">
                 <h4>{{ order_item }}</h4>
-                 <p>${{ order_item.menu_item.price }} each</p>
+                 <p>${{ order_item.get_menu_item.get_price }} each</p>
                 <div class="row" style="max-height: 150px">
                      <div class="col-md-6 test">
-                    <p style="font-size:10px">{{ order_item.menu_item.description|truncatewords:40 }}</p>
+                    <p style="font-size:10px">{{ order_item.get_menu_item.get_description|truncatewords:40 }}</p>
                     </div>
                     <div class="menu-image">
-                     <img src="{{ order_item.menu_item.image_file.url }}" height="100" alt="">
+                     <img src="{{ order_item.get_menu_item.get_image_file.url }}" height="100" alt="">
                     </div>
                 </div>
             </div>

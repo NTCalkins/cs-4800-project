@@ -28,12 +28,11 @@ DATABASES = {
 
 # Django perform a not effective way to collect all static files in each app and combine them together
 # static files
-STATIC_URL = '/static/'
 
 # Extra places for collectstatic to find static files besides static folder in each app (if exists)
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, 'static')
-# ]
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
 
 # media files: media, GIFs, videos, etc.
 MEDIA_URL = '/media/'

@@ -19,6 +19,12 @@ class CustomUserManager(BaseUserManager):
 
     use_in_migrations = True
 
+    def get_first_name(self):
+        return self.first_name
+
+    def get_last_name(self):
+        return self.last_name
+
     def create_user(self, email, password, **extra_fields):
         """
         Create and save a User with the given email and password.
@@ -60,6 +66,15 @@ class CustomUserModel(AbstractUser):
     def __str__(self):
         return self.email
 
+    def get_email(self):
+        return self.email
+
+    def get_first_name(self):
+        return self.first_name
+
+    def get_last_name(self):
+        return self.last_name
+
 
 class State(models.Model):
     state_code = models.CharField(primary_key=True, max_length=2)
@@ -67,6 +82,9 @@ class State(models.Model):
 
     def __str__(self):
         return self.state_code
+
+    def get_name(self):
+        return self.state_name
 
 
 class City(models.Model):
@@ -79,6 +97,12 @@ class City(models.Model):
     def __str__(self):
         return self.city_name
 
+    def get_city_name(self):
+        return self.city_name
+
+    def get_state(self):
+        return self.state_code
+
 
 class ZipCode(models.Model):
     zip_code = models.CharField(primary_key=True, max_length=5)
@@ -86,6 +110,12 @@ class ZipCode(models.Model):
 
     def __str__(self):
         return self.zip_code
+
+    def get_zip_city_state(self):
+        zip = self.zip_code
+        city = self.city.get_city_name()
+        state = self.city.get_state().get_name()
+        return zip + " " + city + ", " + state
 
 
 class Restaurant(models.Model):
@@ -100,6 +130,41 @@ class Restaurant(models.Model):
     def __str__(self):
         return self.restaurant_name
 
+    def get_name(self):
+        return self.restaurant_name
+
+    def get_categories(self):
+        return MenuCategory.objects.filter(restaurant=self)
+
+    def get_address(self):
+        return self.restaurant_address
+
+    def get_phone_number(self):
+        return self.phone_number
+
+    def get_image_file(self):
+        return self.image_file
+
+    def get_description(self):
+        return self.description
+
+    def get_zip_code(self):
+        return self.zip_code
+
+    def get_user(self):
+        return self.user
+
+    def get_orders(self):
+        return Order.objects.filter(restaurant=self)
+
+    def get_cancelled_orders_percentage(self):
+        orders = self.get_orders()
+        total_orders = orders.count()
+        cancel_orders = orders.filter(order_cancelled=True).count()
+        if cancel_orders == 0:
+            return 0
+        return (cancel_orders / total_orders * 100)
+
     def get_average_price(self):
         categories = MenuCategory.objects.filter(restaurant=self)
         total_price = 0
@@ -109,7 +174,7 @@ class Restaurant(models.Model):
             for f in food_items:
                 total_price += f["price"]
                 total_items += 1
-                print(f)
+                # print(f)
         if total_items == 0:
             return "Not enough data for average price"
         else:
@@ -135,7 +200,7 @@ class Restaurant(models.Model):
             for r in ratings:
                 actual_ratings += r['food_quality']
                 total_ratings += 1
-                print(r)
+                # print(r)
         if total_ratings == 0:
             return "No Ratings Yet"
         average = int(actual_ratings / total_ratings)
@@ -160,7 +225,7 @@ class Restaurant(models.Model):
             for r in ratings:
                 actual_ratings += r['timeliness']
                 total_ratings += 1
-                print(r)
+                # print(r)
         if total_ratings == 0:
             return "No Ratings Yet"
         average = int(actual_ratings / total_ratings)
@@ -192,8 +257,32 @@ class Customer(models.Model):
     preference_2 = models.CharField(max_length=64, choices=PREFERENCE_CHOICES, default='VTN')
     zip_code = models.CharField(max_length=5, blank=True)
 
+    def get_user(self):
+        return self.user
+
+    def get_cart(self):
+        return Cart.objects.get(customer=self)
+
     def __str__(self):
-        return self.user.email
+        return self.user.get_email()
+
+    def get_address(self):
+        return self.customer_address
+
+    def get_phone_number(self):
+        return self.phone_number
+
+    def get_avatar(self):
+        return self.avatar
+
+    def get_preference1(self):
+        return self.preference_1
+
+    def get_preference2(self):
+        return self.preference_2
+
+    def get_zip_code(self):
+        return self.zip_code
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -214,6 +303,15 @@ class MenuCategory(models.Model):
     def __str__(self):
         return self.category_name
 
+    def get_menu_items(self):
+        return MenuItem.objects.filter(category=self)
+
+    def get_category_name(self):
+        return self.category_name
+
+    def get_restaurant(self):
+        return self.restaurant
+
 
 class MenuItem(models.Model):
     item_name = models.CharField(max_length=80)
@@ -226,6 +324,21 @@ class MenuItem(models.Model):
     def __str__(self):
         return self.item_name + "(s) from " + self.category.restaurant.restaurant_name
 
+    def get_name(self):
+        return self.item_name
+
+    def get_description(self):
+        return self.description
+
+    def get_price(self):
+        return self.price
+
+    def get_image_file(self):
+        return self.image_file
+
+    def get_category(self):
+        return self.category
+
 
 class Order(models.Model):
     restaurant = models.ForeignKey('Restaurant', on_delete=models.CASCADE, default=1)
@@ -234,6 +347,27 @@ class Order(models.Model):
     special_instruction = models.CharField(max_length=512, blank=True)
     order_fulfilled = models.BooleanField(default=False)
     order_cancelled = models.BooleanField(default=False)
+
+    def get_order_items(self):
+        return OrderItem.objects.filter(order=self)
+
+    def get_restaurant(self):
+        return self.restaurant
+
+    def get_customer(self):
+        return self.customer
+
+    def get_order_date(self):
+        return self.order_date
+
+    def get_special_instruction(self):
+        return self.special_instruction
+
+    def is_fulfilled(self):
+        return self.order_fulfilled
+
+    def is_cancelled(self):
+        return self.order_cancelled
 
     def __str__(self):
         return "Order from " + self.restaurant.restaurant_name
@@ -259,7 +393,6 @@ class Order(models.Model):
 
     def get_review(self):
         review = Review.objects.get(order=self)
-        print(review.pk)
         return review
 
 
@@ -277,6 +410,15 @@ class OrderItem(models.Model):
     def get_price(self):
         return self.menu_item.price * self.quantity
 
+    def get_order(self):
+        return self.order
+
+    def get_menu_item(self):
+        return self.menu_item
+
+    def get_quantity(self):
+        return self.quantity
+
 
 class CartEntry(models.Model):
     """
@@ -285,6 +427,15 @@ class CartEntry(models.Model):
     cart = models.ForeignKey("Cart", null=True, on_delete='CASCADE')
     menu_item = models.ForeignKey(MenuItem, null=True, on_delete='CASCADE')
     quantity = models.PositiveIntegerField()
+
+    def get_cart(self):
+        return self.cart
+
+    def get_menu_item(self):
+        return self.menu_item
+
+    def get_quantity(self):
+        return self.quantity
 
     def get_price(self):
         return self.menu_item.price * self.quantity
@@ -307,17 +458,20 @@ class Cart(models.Model):
 
     def calculate_total_cost(self):
         cart_entries = CartEntry.objects.filter(cart=self)
-        sum = 0
+        sumCost = 0
         for entry in cart_entries:
-            sum += CartEntry.get_price(entry)
-        return sum
+            sumCost += CartEntry.get_price(entry)
+        return sumCost
+
+    def get_cart_entries(self):
+        return CartEntry.objects.filter(cart=self)
 
     def get_cart_quantity(self):
-        cart_entries = CartEntry.objects.filter(cart=self)
-        sum = 0
+        cart_entries = self.get_cart_entries()
+        cartTotal = 0
         for entry in cart_entries:
-            sum += entry.quantity
-        return sum
+            cartTotal += entry.quantity
+        return cartTotal
 
     def add_cart_item(self, menu_item_id, amount):
         """
@@ -374,16 +528,16 @@ class Cart(models.Model):
         Creates an Order from the CartEntrys in the user's cart.
         """
 
-        cart_entries = CartEntry.objects.filter(cart=self)
+        cart_entries = self.get_cart_entries()
         if not cart_entries:
-            print("Unable to make order, nothing in cart!")
+            # print("Unable to make order, nothing in cart!")
             return
         restaurants = set()
-        print(cart_entries)
+        # print(cart_entries)
 
         # Get a unique set of the restaurants in the cart order O(cart_entries.length)
         for cart_entry in cart_entries:
-            restaurants.add(cart_entry.menu_item.category.restaurant)
+            restaurants.add(cart_entry.get_menu_item().get_category().get_restaurant())
 
         for restaurant in restaurants:
             new_order = Order.objects.create(customer=self.customer, restaurant=restaurant)
@@ -391,12 +545,11 @@ class Cart(models.Model):
             new_review = Review.objects.create(order=new_order)
             new_review.save()
             for cart_entry in cart_entries:
-                if cart_entry.menu_item.category.restaurant == restaurant:
-                    new_order_item = OrderItem.objects.create(order=new_order, quantity=cart_entry.quantity,
-                                                              menu_item=cart_entry.menu_item)
+                if cart_entry.get_menu_item().get_category().get_restaurant() == restaurant:
+                    new_order_item = OrderItem.objects.create(order=new_order, quantity=cart_entry.get_quantity(),
+                                                              menu_item=cart_entry.get_menu_item())
                     cart_entry.delete()
                     new_order_item.save()
-
 
         # self.order_date = datetime.now()
         # new_order = Order.objects.create(customer=self.customer, order_date=self.order_date)
@@ -417,4 +570,16 @@ class Review(models.Model):
 
     def __str__(self):
         return str(self.food_quality) + "/5  food quality and " + str(self.timeliness) \
-               + "/5 timeliness for " + str(self.order.restaurant)
+               + "/5 timeliness for " + str(self.order.get_restaurant())
+
+    def get_order(self):
+        return self.order
+
+    def get_comment(self):
+        return self.comment
+
+    def get_food_quality(self):
+        return self.food_quality
+
+    def get_timeliness(self):
+        return self.timeliness

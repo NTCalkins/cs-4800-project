@@ -1,16 +1,16 @@
 {% extends "base_template.html" %}
 
 {% block content %}
-    {% if user.restaurant.image_file %}
-        <img src="{{ user.restaurant.image_file.url }}" height="170" width="100%" alt="">
+    {% if user.restaurant.get_image_file %}
+        <img src="{{ user.restaurant.get_image_file.url }}" height="170" width="100%" alt="">
     {% endif %}
     <div class="row">
         <div class="col-md-3">
             <div class="card card-body">
                 <h3 style="text-align: center">Account Settings</h3>
                 {% if user.is_customer %}
-                    {% if user.customer.avatar %}
-                        <img class="profile-pic" src="{{ user.customer.avatar.url }}" alt="">
+                    {% if user.customer.get_avatar %}
+                        <img class="profile-pic" src="{{ user.customer.get_avatar.url }}" alt="">
                     {% endif %}
                     <hr>
                     <a class="btn btn-sm" href="{% url 'eaterie:customer_home' %}">Back to home</a>

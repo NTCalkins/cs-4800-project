@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 STATIC_URL = "/static/"
 #
 # # For non-react files
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+#
 
 # For react files
 # STATIC_ROOT = os.path.join(BASE_DIR, "frontend/gui/build/static")
@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'crispy_forms',
+    'storages',
     # ... include the providers you want to enable: to be added
 
     # local app:

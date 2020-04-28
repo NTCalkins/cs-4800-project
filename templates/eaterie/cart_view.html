@@ -18,7 +18,7 @@
             <div class="card">
                 <div class="card-body">
                         <table class="table table-striped">
-                        <thead>
+                        <thead class="cart-rows">
                         <tr>
                             <th>Item</th>
                             <th class="text-center">Description</th>
@@ -27,10 +27,8 @@
                             <th class="text-center">Remove</th>
                         </tr>
                         </thead>
-                            <tbody>
-                            <div class="cart-items">
+                            <tbody class="cart-items">
                             <tr>
-                                <div class="cart-rows">
                                 <td>
                                     <h4>{{ cart_entry }}</h4>
                                     <img src="{{ cart_entry.menu_item.image_file.url }}" height="100" alt="">
@@ -38,23 +36,18 @@
                                 <td><p style="font-size:10px">{{ cart_entry.menu_item.description|truncatewords:40 }}</p></td>
 
                                 <div>
-                                    <td>{{ cart_entry.quantity }}</td>
+                                    <td><input class="cart-quantity-input" type="number" value="{{ cart_entry.quantity }}" min="1" step="1" name="item_amount"/></td>
                                 </div>
                                 <div class="cart-price">
-                                <td><p class="cart-price">${{ cart_entry.menu_item.price }} each</p></td>
+                                <td><p>${{ cart_entry.menu_item.price }} each</p></td>
                                 </div>
                                 <div class="product-removal">
-                                    <form method="POST">
-                                        {% csrf_token %}
-                                <td>
-                                    <input hidden type="text" name="cartpk" value="{{ cart_entry.menu_item.pk }}" readonly>
-                                    <input type="submit" class="btn btn-danger" value="Remove" name="remove_from_cart_button"/>
-                                </td>
-                                    </form>
+                                <td><button type="button" class="btn btn-danger">Remove</button></td>
                                 </div>
-                                </div>
+
+
+
                             </tr>
-                            </div>
                                 </tbody>
                         </table>
                 </div>
@@ -76,7 +69,7 @@
                     <h5>Are You Sure You're Ready to Order?</h5>
                 </div>
                 <div class="modal-body">
-                    <p> ${{ user.customer.cart.calculate_total_cost }}</p>
+                    <p> {{ user.customer.cart.calculate_total_cost }}</p>
                     <form method="POST">
                         {% csrf_token %}
                         <label for="special_instructions">Special Instructions:</label>
@@ -98,7 +91,7 @@
 }
 
 function ready() {
-    var removeCartItemButtons = document.getElementsByClassName('btn-dager')
+    var removeCartItemButtons = document.getElementsByClassName('btn-danger')
     for (var i = 0; i < removeCartItemButtons.length; i++) {
         var button = removeCartItemButtons[i]
         button.addEventListener('click', removeCartItem)
@@ -127,12 +120,11 @@ function quantityChanged(event) {
     }
     updateCartTotal()
 }
-
+/*
 function updateCartTotal() {
     var cartItemContainer = document.getElementsByClassName('cart-items')[0]
     var cartRows = cartItemContainer.getElementsByClassName('cart-row')
     var total = 0
-    console.log(cartItemContainer.length)
     for (var i = 0; i < cartRows.length; i++) {
         var cartRow = cartRows[i]
         var priceElement = cartRow.getElementsByClassName('cart-price')[0]
@@ -140,14 +132,12 @@ function updateCartTotal() {
         var price = parseFloat(priceElement.innerText.replace('$', ''))
         var quantity = quantityElement.value
         total = total + (price * quantity)
-        console.log(total)
-        console.log(price)
     }
     total = Math.round(total * 100) / 100
-    document.getElementsByClassName('cart-total')[0].innerText = '$' + total
+    document.getElementsByClassName('{{ user.customer.cart.calculate_total_cost}}')[0].innerText = '$' + total
 }
-
-
+}
+*/
 </script>
     {% endif %}
 {% endblock %}

@@ -105,6 +105,9 @@ class AccountUpdateView(UpdateView):
         return reverse('eaterie:update_account', args=[str(self.request.user.id)])
 
 
+
+
+
 @method_decorator(login_required, name='dispatch')
 class MenuView(DetailView):
     model = Restaurant
@@ -149,32 +152,25 @@ class MenuUpdateView(UpdateView):
         return reverse('eaterie:update_menu', args=[str(restaurant.id)])
 
 
-# @method_decorator(customer_required, name='dispatch')
-# @method_decorator(user_identity_check, name='dispatch')
+#@method_decorator(customer_required, name='dispatch')
+#@method_decorator(user_identity_check, name='dispatch')
 @method_decorator(login_required, name='dispatch')
 class CartView(TemplateView):
     model = Cart
     template_name = 'eaterie/cart_view.html'
 
     def post(self, request, *args, **kwargs):
-        if request.method == "POST" and 'checkout_button' in request.POST:
-            customer = self.request.user.customer
-            si = request.POST['special_instructions']
-            print(si)
-            cart = Cart.objects.get(customer=customer)
-            print("Emptying cart of " + str(cart.customer))
-            new_order = Cart.checkout(cart)
-            # Check if a new order was generated
-            if new_order:
-                new_order.special_instruction = si
-                new_order.save()
-            return HttpResponseRedirect(request.path_info)
-        if request.method == "POST" and 'remove_from_cart_button' in request.POST:
-            cart_item_pk = request.POST['cartpk']
-            cart = Cart.objects.get(customer=self.request.user.customer)
-            Cart.delete_cart_item(cart, cart_item_pk)
+        customer = self.request.user.customer
+        si = request.POST['special_instructions']
+        print(si)
+        cart = Cart.objects.get(customer=customer)
+        print("Emptying cart of " + str(cart.customer))
+        new_order = Cart.checkout(cart)
+        # Check if a new order was generated
+        if new_order:
+            new_order.special_instruction = si
+            new_order.save()
         return HttpResponseRedirect(request.path_info)
-
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(customer_required, name='dispatch')
@@ -186,14 +182,12 @@ class OrderListView(ListView, MultipleObjectMixin):
     def get_queryset(self):
         return Order.objects.filter(customer=self.request.user.customer).order_by('-order_date')
 
-
 @method_decorator(user_identity_check, name='dispatch')
 @method_decorator(customer_required, name='dispatch')
 class OrderDetailView(DetailView):
     model = Order
     pk_url_kwarg = 'pk_order'
     template_name = 'eaterie/order_detail_view.html'
-
 
 @method_decorator(user_identity_check, name='dispatch')
 @method_decorator(customer_required, name='dispatch')
@@ -207,4 +201,4 @@ class ReviewUpdate(UpdateView):
         return reverse(
             'eaterie:review_update_form',
             args=[str(self.request.user.id), str(self.request.POST['order'])]
-        )
+                       )

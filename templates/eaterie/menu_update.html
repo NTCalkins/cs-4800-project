@@ -4,8 +4,8 @@
         <div class="col-md-3">
             <div class="card card-body">
                 <h3 style="text-align: center">Menu Update</h3>
-                {% if user.restaurant.image_file %}
-                    <img class="profile-pic" src="{{ user.restaurant.image_file.url }}" alt="">
+                {% if user.restaurant.get_image_file %}
+                    <img class="profile-pic" src="{{ user.restaurant.get_image_file.url }}" alt="">
                 {% endif %}
                 <hr>
                 <a class="btn btn-sm" href="{% url 'eaterie:restaurant_home' %}">Back to home</a>
@@ -45,7 +45,7 @@
                         <hr>
                         <hr>
                         {% if menu_category.instance.id %}
-                            <h2> {{ menu_category.instance.category_name }}</h2>
+                            <h2> {{ menu_category.instance.get_name }}</h2>
                         {% else %}
                             {% if form|length > 1 %}
                                 <h2>Add another new category</h2>
@@ -77,7 +77,7 @@
                                             <td>
                                                 <em>
                                                     {% if menu_item.instance.id %}
-                                                        <p>{{ menu_item.instance.item_name }}</p>
+                                                        <p>{{ menu_item.instance.get_name }}</p>
                                                     {% else %}
                                                         <p>Add a new item</p>
                                                     {% endif %}
@@ -92,8 +92,8 @@
                                                 <hr>
                                             </td>
                                             <td>
-                                                {% if menu_item.instance.image_file %}
-                                                    <img src="{{ menu_item.instance.image_file.url }}" height="150"
+                                                {% if menu_item.instance.get_image_file %}
+                                                    <img src="{{ menu_item.instance.get_image_file.url }}" height="150"
                                                          width="130" alt="">
                                                 {% endif %}
                                             </td>
