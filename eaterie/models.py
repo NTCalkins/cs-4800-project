@@ -354,6 +354,21 @@ class Cart(models.Model):
         except ObjectDoesNotExist:  # checks that the item is reachable
             pass
 
+    def delete_cart_item(self, cart_entry_item_id):
+        """
+        Deletes entire cart entry from a user's cart
+        """
+
+        try:
+            item = MenuItem.objects.get(pk=cart_entry_item_id)  # will access the MenuItem the user is trying to delete from cart
+            try:  # if the cart item exists, then delete the item
+                item_exists = CartEntry.objects.get(cart=self, menu_item=item)
+                item_exists.delete()
+            except CartEntry.DoesNotExist:  # this shouldn't be encountered, but if so
+                pass
+        except ObjectDoesNotExist:  # checks that the item is reachable
+            pass
+
     def checkout(self):
         """
         Creates an Order from the CartEntrys in the user's cart.
