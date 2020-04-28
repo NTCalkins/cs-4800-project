@@ -42,7 +42,13 @@
                                 <td><p>${{ cart_entry.menu_item.price }} each</p></td>
                                 </div>
                                 <div class="product-removal">
-                                <td><button type="button" class="btn btn-danger">Remove</button></td>
+                                   <form method="POST">
+                                        {% csrf_token %}
+                                <td>
+                                    <input hidden type="text" name="cartpk" value="{{ cart_entry.menu_item.pk }}" readonly>
+                                    <input type="submit" class="btn btn-danger" value="Remove" name="remove_from_cart_button"/>
+                                </td>
+                                    </form>
                                 </div>
 
 
@@ -91,7 +97,7 @@
 }
 
 function ready() {
-    var removeCartItemButtons = document.getElementsByClassName('btn-danger')
+    var removeCartItemButtons = document.getElementsByClassName('btn-daner')
     for (var i = 0; i < removeCartItemButtons.length; i++) {
         var button = removeCartItemButtons[i]
         button.addEventListener('click', removeCartItem)

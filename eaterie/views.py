@@ -160,16 +160,22 @@ class CartView(TemplateView):
     template_name = 'eaterie/cart_view.html'
 
     def post(self, request, *args, **kwargs):
-        customer = self.request.user.customer
-        si = request.POST['special_instructions']
-        print(si)
-        cart = Cart.objects.get(customer=customer)
-        print("Emptying cart of " + str(cart.customer))
-        new_order = Cart.checkout(cart)
-        # Check if a new order was generated
-        if new_order:
-            new_order.special_instruction = si
-            new_order.save()
+        if request.method == "POST" and 'checkout_button' in request.POST:
+            customer = self.request.user.customer
+            si = request.POST['special_instructions']
+            print(si)
+            cart = Cart.objects.get(customer=customer)
+            print("Emptying cart of " + str(cart.customer))
+            new_order = Cart.checkout(cart)
+            # Check if a new order was generated
+            if new_order:
+                new_order.special_instruction = si
+                new_order.save()
+            return HttpResponseRedirect(request.path_info)
+        if request.method == "POST" and 'remove_from_cart_button' in request.POST:
+            cart_item_pk = request.POST['cartpk']
+            cart = Cart.objects.get(customer=self.request.user.customer)
+            Cart.delete_cart_item(cart, cart_item_pk)
         return HttpResponseRedirect(request.path_info)
 
 @method_decorator(login_required, name='dispatch')
