@@ -163,7 +163,7 @@ class Restaurant(models.Model):
         cancel_orders = orders.filter(order_cancelled=True).count()
         if cancel_orders == 0:
             return 0
-        return (cancel_orders/total_orders * 100)
+        return (cancel_orders / total_orders * 100)
 
     def get_average_price(self):
         categories = MenuCategory.objects.filter(restaurant=self)
@@ -174,7 +174,7 @@ class Restaurant(models.Model):
             for f in food_items:
                 total_price += f["price"]
                 total_items += 1
-                #print(f)
+                # print(f)
         if total_items == 0:
             return "Not enough data for average price"
         else:
@@ -200,7 +200,7 @@ class Restaurant(models.Model):
             for r in ratings:
                 actual_ratings += r['food_quality']
                 total_ratings += 1
-                #print(r)
+                # print(r)
         if total_ratings == 0:
             return "No Ratings Yet"
         average = int(actual_ratings / total_ratings)
@@ -225,7 +225,7 @@ class Restaurant(models.Model):
             for r in ratings:
                 actual_ratings += r['timeliness']
                 total_ratings += 1
-                #print(r)
+                # print(r)
         if total_ratings == 0:
             return "No Ratings Yet"
         average = int(actual_ratings / total_ratings)
@@ -458,20 +458,20 @@ class Cart(models.Model):
 
     def calculate_total_cost(self):
         cart_entries = CartEntry.objects.filter(cart=self)
-        sum = 0
+        sumCost = 0
         for entry in cart_entries:
-            sum += CartEntry.get_price(entry)
-        return sum
+            sumCost += CartEntry.get_price(entry)
+        return sumCost
 
     def get_cart_entries(self):
         return CartEntry.objects.filter(cart=self)
 
     def get_cart_quantity(self):
         cart_entries = self.get_cart_entries()
-        sum = 0
+        cartTotal = 0
         for entry in cart_entries:
-            sum += entry.quantity
-        return sum
+            cartTotal += entry.quantity
+        return cartTotal
 
     def add_cart_item(self, menu_item_id, amount):
         """
@@ -515,10 +515,10 @@ class Cart(models.Model):
 
         cart_entries = self.get_cart_entries()
         if not cart_entries:
-            #print("Unable to make order, nothing in cart!")
+            # print("Unable to make order, nothing in cart!")
             return
         restaurants = set()
-        #print(cart_entries)
+        # print(cart_entries)
 
         # Get a unique set of the restaurants in the cart order O(cart_entries.length)
         for cart_entry in cart_entries:

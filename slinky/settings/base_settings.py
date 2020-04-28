@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'crispy_forms',
+    'storages',
     # ... include the providers you want to enable: to be added
 
     # local app:

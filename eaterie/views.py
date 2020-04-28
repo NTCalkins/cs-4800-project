@@ -162,8 +162,8 @@ class CartView(TemplateView):
     def post(self, request, *args, **kwargs):
         customer = self.request.user.customer
         si = request.POST['special_instructions']
-        cart = Cart.objects.get(customer=customer)
-        print("Emptying cart of " + str(cart.customer))
+        cart = customer.get_cart()
+        print("Emptying cart of " + str(cart.get_customer))
         new_order = Cart.checkout(cart)
         # Check if a new order was generated
         if new_order:
