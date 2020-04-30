@@ -1,5 +1,16 @@
 {% extends "base_template.html" %}
 
 {% block content %}
-    Restaurant Home
+
+    {% if user.restaurant.get_description == "" %}
+        <div class="alert alert-danger" style="margin-left: 30%;margin-right: 30%; margin-top:40px">Set a description to let the world know what your restaurant is about!</div>
+    {% endif %}
+
+    {% if not user.restaurant.get_address %}
+        <div class="alert alert-danger" style="margin-left: 30%;margin-right: 30%; margin-top:40px">Set an address so people know where to find you!</div>
+    {% endif %}
+
+    {% if not user.restaurant.get_image_file %}
+        <div class="alert alert-danger" style="margin-left: 30%;margin-right: 30%; margin-top:40px">Set an image to associate with your restaurant!</div>
+    {% endif %}
 {% endblock %}

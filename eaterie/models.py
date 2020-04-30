@@ -117,6 +117,9 @@ class ZipCode(models.Model):
         state = self.city.get_state().get_name()
         return zip + " " + city + ", " + state
 
+    def get_zip(self):
+        return self.zip_code
+
 
 class Restaurant(models.Model):
     restaurant_name = models.CharField(max_length=80)

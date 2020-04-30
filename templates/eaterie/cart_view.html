@@ -7,11 +7,13 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Shopping Cart</h1>
-    {% if  not user.customer.cart.cartentry_set.all %}
-        <h1>Your cart is empty!</h1>
+    <h1 style="margin:40px">Shopping Cart</h1>
+    {% if  not user.customer.get_cart.get_cart_entries %}
+        <h1 style="margin:40px">
+            Your cart is empty! <a></a>
+        </h1>
     {% else %}
-    {% for cart_entry in user.customer.cart.cartentry_set.all %}
+    {% for cart_entry in user.customer.get_cart.get_cart_entries %}
 <div class="container">
     <div class="row"></div>
         <div class="col-md-12">
@@ -31,12 +33,12 @@
                             <tr>
                                 <td>
                                     <h4>{{ cart_entry }}</h4>
-                                    <img src="{{ cart_entry.menu_item.image_file.url }}" height="100" alt="">
+                                    <img src="{{ cart_entry.get_menu_item.get_image_file.url }}" height="100" alt="">
                                 </td>
-                                <td><p style="font-size:10px">{{ cart_entry.menu_item.description|truncatewords:40 }}</p></td>
+                                <td><p style="font-size:10px">{{ cart_entry.get_menu_item.get_description|truncatewords:40 }}</p></td>
 
                                 <div>
-                                    <td><input class="cart-quantity-input" type="number" value="{{ cart_entry.quantity }}" min="1" step="1" name="item_amount"/></td>
+                                    <td><input class="cart-quantity-input" type="number" value="{{ cart_entry.get_quantity }}" min="1" step="1" name="item_amount"/></td>
                                 </div>
                                 <div class="cart-price">
                                 <td><p>${{ cart_entry.menu_item.price }} each</p></td>
@@ -45,7 +47,7 @@
                                    <form method="POST">
                                         {% csrf_token %}
                                 <td>
-                                    <input hidden type="text" name="cartpk" value="{{ cart_entry.menu_item.pk }}" readonly>
+                                    <input hidden type="text" name="cartpk" value="{{ cart_entry.get_menu_item.pk }}" readonly>
                                     <input type="submit" class="btn btn-danger" value="Remove" name="remove_from_cart_button"/>
                                 </td>
                                     </form>
@@ -75,7 +77,7 @@
                     <h5>Are You Sure You're Ready to Order?</h5>
                 </div>
                 <div class="modal-body">
-                    <p> {{ user.customer.cart.calculate_total_cost }}</p>
+                    <p> {{ user.customer.get_cart.calculate_total_cost }}</p>
                     <form method="POST">
                         {% csrf_token %}
                         <label for="special_instructions">Special Instructions:</label>

@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Orders</h1>
+    <h1 style="margin-left: 40px;margin-top: 20px">Orders</h1>
     {% if order_list %}
     {% for order in order_list %}
         <div class="card" style="margin: 40px">
@@ -14,7 +14,9 @@
 
                     <h4>{{ order }}</h4>
                      <p>${{ order.get_total_cost }} total cost</p>
-                    <p> Order made at {{ order.get_time }} on {{ order.get_date }}</p>
+                    <p> Order placed at {{ order.get_time }} on {{ order.get_date }}</p>
+
+                    {% if user.is_customer %}
                     <div class = "container">
                         <div class="divL">
                             <a class="btn btn-primary" href="{% url 'eaterie:order_detail_view' user.pk order.pk %}">More Details</a>
@@ -23,10 +25,32 @@
                             <a class="btn btn-primary" href="{% url 'eaterie:review_update_form' pk=user.pk pk_review=order.get_review.pk %}">Leave a Review</a>
                         </div>
                     </div>
+                    {% endif %}
+
+                    {% if user.is_restaurant %}
+                        <div class = "container">
+                            <div class = "divL">
+                                {% if order.is_fulfilled %}
+                                    <button type="button" class="btn btn-danger">Set order to unfulfilled</button>
+                                {% else %}
+                                    <button type="button" class="btn btn-success">Set order to fulfilled</button>
+                                {% endif %}
+                            </div>
+                            <div class = "divR">
+                                {% if order.is_cancelled %}
+                                    <button type="button" class="btn btn-success">Uncancel order</button>
+                                {% else %}
+                                    <button type="button" class="btn btn-danger">Cancel order</button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
+                {% if user.is_customer  %}
                 <div class="col-sm-3" style="margin: 20px">
                     <img src="{{ order.get_restaurant.get_image_file.url }}" height="100">
                 </div>
+                {% endif %}
             </div>
         </div>
         <p></p>

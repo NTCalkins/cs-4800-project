@@ -179,15 +179,19 @@ class CartView(TemplateView):
         return HttpResponseRedirect(request.path_info)
 
 @method_decorator(login_required, name='dispatch')
-@method_decorator(customer_required, name='dispatch')
 class OrderListView(ListView, MultipleObjectMixin):
     model = Order
     paginate_by = 5
     template_name = 'eaterie/order_list_view.html'
 
     def get_queryset(self):
-        return Order.objects.filter(customer=self.request.user.customer).order_by('-order_date')
 
+        if self.request.user.is_customer:
+            orders = Order.objects.filter(customer=self.request.user.customer).order_by('-order_date')
+        else:
+            orders = Order.objects.filter(restaurant=self.request.user.restaurant).order_by('-order_date')
+
+        return orders
 @method_decorator(user_identity_check, name='dispatch')
 @method_decorator(customer_required, name='dispatch')
 class OrderDetailView(DetailView):

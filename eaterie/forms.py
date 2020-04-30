@@ -37,7 +37,17 @@ class RestaurantSignUpForm(UserCreationForm):
     def clean_zip_code(self):
         zip = self.cleaned_data['zip_code']
         if not ZipCode.objects.filter(zip_code=zip).exists():
-            raise ValidationError(_('We are sorry, our service is not available at your location.'))
+
+            # This code gets the valid zipcodes in order to send it through the validation error
+            zipcodes = ZipCode.objects.all()
+            zc_codes = []
+            for zc in zipcodes:
+                zc_codes.append(str(zc.get_zip()))
+            zstring = '\n'.join(zc_codes)
+
+            raise ValidationError(
+                _('We are sorry, our service is not available at your location.\nAvailable for these zipcodes:\n' + zstring)
+            )
         return zip
 
     @transaction.atomic

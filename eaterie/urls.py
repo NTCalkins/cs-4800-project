@@ -20,4 +20,5 @@ urlpatterns = [
     path('account/<int:pk>/update', views.AccountUpdateView.as_view(), name='update_account'),
     path('restaurant/<int:pk>/menu', views.MenuView.as_view(), name='restaurant_menu'),
     path('restaurant/<int:pk>/menu/update', views.MenuUpdateView.as_view(), name='update_menu'),
+    path('restaurant/orders', views.OrderListView.as_view(), name='order_list_view'),
 ]
