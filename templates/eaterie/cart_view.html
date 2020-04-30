@@ -10,7 +10,7 @@
     <h1 style="margin:40px">Shopping Cart</h1>
     {% if  not user.customer.get_cart.get_cart_entries %}
         <h1 style="margin:40px">
-            Your cart is empty! <a></a>
+            Your cart is empty!<br><a href="{% url 'eaterie:order_list_view' %}">Go to orders</a>
         </h1>
     {% else %}
     {% for cart_entry in user.customer.get_cart.get_cart_entries %}

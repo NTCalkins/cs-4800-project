@@ -190,8 +190,19 @@ class OrderListView(ListView, MultipleObjectMixin):
             orders = Order.objects.filter(customer=self.request.user.customer).order_by('-order_date')
         else:
             orders = Order.objects.filter(restaurant=self.request.user.restaurant).order_by('-order_date')
-
         return orders
+
+    def post(self, request, *args, **kwargs):
+        if request.method == "POST" and 'fulfill' in request.POST:
+            order = Order.objects.get(pk=request.POST['order_id'])
+            order.order_fulfilled = not order.is_fulfilled()
+            order.save()
+        elif request.method == "POST" and 'cancel' in request.POST:
+            order = Order.objects.get(pk=request.POST['order_id'])
+            order.order_cancelled = not order.is_cancelled()
+            order.save()
+        return HttpResponseRedirect(request.path_info)
+
 @method_decorator(user_identity_check, name='dispatch')
 @method_decorator(customer_required, name='dispatch')
 class OrderDetailView(DetailView):

@@ -28,21 +28,40 @@
                     {% endif %}
 
                     {% if user.is_restaurant %}
+                        <p>Order placed by {{ order.get_customer }}</p>
+                        <div id="accordion" role="tablist" style="margin-bottom: 10px">
+                            <div class="card-header" role="tab" id="headingOne">
+                                <h5 class="mb-0">
+                                    <a data-toggle="collapse" href="#collapse{{ order.id }}">
+                                        Show Items in Order
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="collapse{{ order.id }}" class="collapse" role="tabpanel">
+                                {% for item in order.get_order_items %}
+                                    <li style="margin-left:20px">{{ item.get_quantity }} {{ item.get_menu_item.get_name }}</li>
+                                {% endfor %}
+                            </div>
+                        </div>
                         <div class = "container">
-                            <div class = "divL">
-                                {% if order.is_fulfilled %}
-                                    <button type="button" class="btn btn-danger">Set order to unfulfilled</button>
-                                {% else %}
-                                    <button type="button" class="btn btn-success">Set order to fulfilled</button>
-                                {% endif %}
-                            </div>
-                            <div class = "divR">
-                                {% if order.is_cancelled %}
-                                    <button type="button" class="btn btn-success">Uncancel order</button>
-                                {% else %}
-                                    <button type="button" class="btn btn-danger">Cancel order</button>
-                                {% endif %}
-                            </div>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input hidden type="text" name="order_id" value="{{ order.id }}" readonly>
+                                <div class = "divL">
+                                    {% if order.is_fulfilled %}
+                                        <input type="submit" class="btn btn-danger" name="fulfill" value="Set to unfulfilled"/>
+                                    {% else %}
+                                        <input type="submit" class="btn btn-success" name="fulfill" value="Set to fulfilled"/>
+                                    {% endif %}
+                                </div>
+                                <div class = "divR">
+                                    {% if order.is_cancelled %}
+                                        <input type="submit" class="btn btn-success" name="cancel" value="uncancel order"/>
+                                    {% else %}
+                                        <input type="submit" class="btn btn-danger" name="cancel" value="Cancel Order"/>
+                                    {% endif %}
+                                </div>
+                            </form>
                         </div>
                     {% endif %}
                 </div>

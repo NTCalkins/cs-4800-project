@@ -116,9 +116,9 @@
                             <p>{% if restaurant.get_address %}
                             {{ restaurant.get_address }}<br>
                                 {% else %}
-                                 No street address available<br>
+                                <b>[No street address available]</b><br>
                             {% endif %}
-                                {{ restaurant.get_zip_code.get_zip_city_state }}
+                                {{ restaurant.get_zip_code.get_zip_city_state }}<br>
                                 <b>Phone:</b> {{ restaurant.get_phone_number }}</p>
                         </div>
                         <div class="card-body text-center" style="border-top: 1px solid rgba(0,0,0,.1);">

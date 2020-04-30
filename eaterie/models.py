@@ -166,7 +166,7 @@ class Restaurant(models.Model):
         cancel_orders = orders.filter(order_cancelled=True).count()
         if cancel_orders == 0:
             return 0
-        return (cancel_orders / total_orders * 100)
+        return (cancel_orders / total_orders) * 100
 
     def get_average_price(self):
         categories = MenuCategory.objects.filter(restaurant=self)
@@ -571,6 +571,8 @@ class Review(models.Model):
     food_quality = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], default=3)
     timeliness = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], default=3)
 
+
+
     def __str__(self):
         return str(self.food_quality) + "/5  food quality and " + str(self.timeliness) \
                + "/5 timeliness for " + str(self.order.get_restaurant())
@@ -586,3 +588,5 @@ class Review(models.Model):
 
     def get_timeliness(self):
         return self.timeliness
+
+
