@@ -203,12 +203,10 @@ class OrderListView(ListView, MultipleObjectMixin):
     def post(self, request, *args, **kwargs):
         if request.method == "POST" and 'fulfill' in request.POST:
             order = Order.objects.get(pk=request.POST['order_id'])
-            order.order_fulfilled = not order.is_fulfilled()
-            order.save()
+            order.flip_fulfilled()
         elif request.method == "POST" and 'cancel' in request.POST:
             order = Order.objects.get(pk=request.POST['order_id'])
-            order.order_cancelled = not order.is_cancelled()
-            order.save()
+            order.flip_cancelled()
         return HttpResponseRedirect(request.path_info)
 
 @method_decorator(user_identity_check, name='dispatch')
@@ -223,7 +221,7 @@ class OrderDetailView(DetailView):
 class ReviewUpdate(UpdateView):
     model = Review
     pk_url_kwarg = 'pk_review'
-    fields = '__all__'
+    fields = ['comment','food_quality','timeliness']
     template_name = 'eaterie/review_update_form.html'
 
     def get_success_url(self):

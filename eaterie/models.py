@@ -351,6 +351,14 @@ class Order(models.Model):
     order_fulfilled = models.BooleanField(default=False)
     order_cancelled = models.BooleanField(default=False)
 
+    def flip_cancelled(self):
+        self.order_cancelled = not self.order_cancelled
+        self.save()
+
+    def flip_fulfilled(self):
+        self.order_fulfilled = not self.order_fulfilled
+        self.save()
+
     def get_order_items(self):
         return OrderItem.objects.filter(order=self)
 

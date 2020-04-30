@@ -2,14 +2,22 @@
 {% load static %}
 
 {% block content %}
-    <h1>{{ order }} on {{ order.get_date }} at {{ order.get_time }}</h1>
-    {% if not order.is_cancelled %}
+    <h1 style="margin-left: 30px;margin-top: 40px">{{ order }} on {{ order.get_date }} at {{ order.get_time }}</h1>
+    {% if not order.is_cancelled and not order.is_fulfilled %}
         <div style="margin: 30px">
             <span class="badge badge-success"> This order is in progress</span>
         </div>
-    {% else %}
-        <span class="label label-important"> This order has been cancelled</span>
+    {% elif order.is_cancelled %}
+        <div style="margin: 30px">
+            <span class="badge badge-danger"> This order has been cancelled</span>
+        </div>
     {% endif %}
+    {% if order.is_fulfilled %}
+        <div style="margin: 30px">
+            <span class="badge badge-success"> This order has been fulfilled</span>
+        </div>
+    {% endif %}
+
     {{ order.get_special_instruction }}
     {% for order_item in order.get_order_items %}
         <div class="col-md-6">

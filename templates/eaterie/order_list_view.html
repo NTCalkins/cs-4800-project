@@ -18,12 +18,28 @@
 
                     {% if user.is_customer %}
                     <div class = "container">
+                        {% if not order.is_cancelled and not order.is_fulfilled %}
+                            <div style="margin-bottom: 15px">
+                                <span class="badge badge-success"> This order is in progress</span>
+                            </div>
+                        {% elif order.is_cancelled %}
+                            <div style="margin-bottom: 15px">
+                                <span class="badge badge-danger"> This order has been cancelled</span>
+                            </div>
+                        {% endif %}
+                        {% if order.is_fulfilled %}
+                            <div style="margin-bottom: 15px">
+                                <span class="badge badge-success"> This order has been fulfilled</span>
+                            </div>
+                        {% endif %}
                         <div class="divL">
                             <a class="btn btn-primary" href="{% url 'eaterie:order_detail_view' user.pk order.pk %}">More Details</a>
                         </div>
-                        <div class="divR">
-                            <a class="btn btn-primary" href="{% url 'eaterie:review_update_form' pk=user.pk pk_review=order.get_review.pk %}">Leave a Review</a>
-                        </div>
+                        {% if order.is_cancelled or order.is_fulfilled %}
+                            <div class="divR">
+                                <a class="btn btn-primary" href="{% url 'eaterie:review_update_form' pk=user.pk pk_review=order.get_review.pk %}">Leave a Review</a>
+                            </div>
+                        {% endif %}
                     </div>
                     {% endif %}
 
@@ -48,16 +64,16 @@
                                 {% csrf_token %}
                                 <input hidden type="text" name="order_id" value="{{ order.id }}" readonly>
                                 <div class = "divL">
-                                    {% if order.is_fulfilled %}
+                                    {% if order.is_fulfilled and not order.is_cancelled %}
                                         <input type="submit" class="btn btn-danger" name="fulfill" value="Set to unfulfilled"/>
-                                    {% else %}
+                                    {% elif  not order.is_fulfilled and not order.is_cancelled %}
                                         <input type="submit" class="btn btn-success" name="fulfill" value="Set to fulfilled"/>
                                     {% endif %}
                                 </div>
                                 <div class = "divR">
                                     {% if order.is_cancelled %}
-                                        <input type="submit" class="btn btn-success" name="cancel" value="uncancel order"/>
-                                    {% else %}
+                                        <input type="submit" class="btn btn-success" name="cancel" value="Uncancel order"/>
+                                    {% elif not order.is_fulfilled %}
                                         <input type="submit" class="btn btn-danger" name="cancel" value="Cancel Order"/>
                                     {% endif %}
                                 </div>
