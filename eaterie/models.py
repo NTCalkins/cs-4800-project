@@ -493,16 +493,17 @@ class Cart(models.Model):
         except ObjectDoesNotExist:  # checks that the item is reachable
             pass
 
-    def remove_cart_item(self, menu_item_id):
+    def change_quantity_cart_item(self, cart_entry_item_id, amount):
         """
-        Removes a menu item from a user's cart.
+        Changes quantity of an item in a user's cart.
         """
 
         try:
-            item = MenuItem.objects.get(pk=menu_item_id)  # will access the MenuItem that user is trying to add to cart
-            try:  # if the cart entry already exists, just decrement that item's quantity
+            # will access the MenuItem the user is trying to change quantity of
+            item = MenuItem.objects.get(pk=cart_entry_item_id)
+            try:  # if the cart entry already exists, just change that item's quantity
                 item_exists = CartEntry.objects.get(cart=self, menu_item=item)
-                item_exists.quantity -= 1
+                item_exists.quantity = amount
                 item_exists.save()
                 if item_exists.quantity == 0:  # if the quantity is 0, delete CartEntry
                     item_exists.delete()
@@ -517,7 +518,8 @@ class Cart(models.Model):
         """
 
         try:
-            item = MenuItem.objects.get(pk=cart_entry_item_id)  # will access the MenuItem the user is trying to delete from cart
+            # will access the MenuItem the user is trying to delete from cart
+            item = MenuItem.objects.get(pk=cart_entry_item_id)
             try:  # if the cart item exists, then delete the item
                 item_exists = CartEntry.objects.get(cart=self, menu_item=item)
                 item_exists.delete()

@@ -172,11 +172,19 @@ class CartView(TemplateView):
                 new_order.special_instruction = si
                 new_order.save()
             return HttpResponseRedirect(request.path_info)
+
         if request.method == "POST" and 'remove_from_cart_button' in request.POST:
             cart_item_pk = request.POST['cartpk']
             cart = Cart.objects.get(customer=self.request.user.customer)
             Cart.delete_cart_item(cart, cart_item_pk)
-        return HttpResponseRedirect(request.path_info)
+            return HttpResponseRedirect(request.path_info)
+
+        if request.method == "POST" and 'item_amount_button' in request.POST:
+            cart_item_pk = request.POST['cartpk']
+            item_amount = int(request.POST['item_amount'])
+            cart = Cart.objects.get(customer=self.request.user.customer)
+            Cart.change_quantity_cart_item(cart, cart_item_pk, item_amount)
+            return HttpResponseRedirect(request.path_info)
 
 @method_decorator(login_required, name='dispatch')
 class OrderListView(ListView, MultipleObjectMixin):

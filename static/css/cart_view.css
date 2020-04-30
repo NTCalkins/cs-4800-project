@@ -9,3 +9,11 @@
     max-width: 50px;
     margin: auto;
 }
+
+.cart-quantity-input {
+    margin-bottom: 20px;
+}
+
+.quantity-button {
+    margin-left: 1em;
+}
