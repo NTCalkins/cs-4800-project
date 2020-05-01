@@ -49,13 +49,15 @@
             <div id="collapse_reviews" class="collapse" role="tabpanel">
                 <div class="row">
                     {% for review in restaurant.get_public_reviews %}
-                        <div class="containerReview">
+                        <div class="containerReview" style="margin-left:20px">
                             <div class="col-md-6">
                                 <img src = {{ review.get_order.get_customer.get_avatar.url }} style="width:90px">
                                 <p><span>{{ review.get_order.get_customer.get_user.first_name }}</span></p>
-                                <p>Comments: {{review.get_comment}}<br>
+                                <p>Comments: {{review.get_comment}}<br></p>
+                                {% if not review.get_order.is_cancelled %}
                                     Food quality: {{ review.get_food_quality }}/5<br>
-                                    Timeliness: {{ review.get_timeliness }}/5</p>
+                                    Timeliness: {{ review.get_timeliness }}/5
+                                {% endif %}
                             </div>
                         </div>
                     {% endfor %}
