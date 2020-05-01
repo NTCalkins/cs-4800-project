@@ -210,7 +210,7 @@ class Restaurant(models.Model):
     def get_food_quality(self):
         total_ratings = 0
         actual_ratings = 0
-        ratings = self.get_public_reviews().filter.values()
+        ratings = self.get_public_reviews().values()
         for r in ratings:
             actual_ratings += r['food_quality']
             total_ratings += 1
