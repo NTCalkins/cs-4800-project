@@ -13,8 +13,9 @@ from nested_formset import nestedformset_factory
 from eaterie.decorators import (customer_required, restaurant_required, user_identity_check,
                                 restaurant_owner_identity_check)
 from eaterie.forms import (CustomerSignUpForm, RestaurantSignUpForm, CustomerUpdateForm, RestaurantUpdateForm,
-                           RestaurantSearchForm)
+                           RestaurantSearchForm, ReviewForm)
 from eaterie.models import Restaurant, CustomUserModel, MenuCategory, MenuItem, Customer, Cart, CartEntry, Order, Review
+from django import forms
 
 
 def login_redirect(request):
@@ -221,11 +222,12 @@ class OrderDetailView(DetailView):
 class ReviewUpdate(UpdateView):
     model = Review
     pk_url_kwarg = 'pk_review'
-    fields = ['comment','food_quality','timeliness']
+    form_class = ReviewForm
     template_name = 'eaterie/review_update_form.html'
 
     def get_success_url(self):
         return reverse(
             'eaterie:review_update_form',
-            args=[str(self.request.user.id), str(self.request.POST['order'])]
+            args=[str(self.request.user.id), str(self.kwargs['pk_review'])]
                        )
+

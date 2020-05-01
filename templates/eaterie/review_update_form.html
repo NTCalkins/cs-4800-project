@@ -5,6 +5,7 @@
 {% block content %}
     <div style="margin: 100px">
     <h1> Leave a review for {{ review.get_order.get_restaurant }}!</h1>
+
         <div id="accordion" role="tablist" style="margin-bottom: 10px">
             <div class="card-header" role="tab" id="headingOne">
                 <h5 class="mb-0">
@@ -35,7 +36,12 @@
             </div>
         </div>
     <form method="post">{% csrf_token %}
-        {{ form|crispy }}
+        {% for field in form %}
+            {% if field == form %}
+            {% else %}
+                {{ field|as_crispy_field }}
+            {% endif %}
+        {% endfor %}
         <input type="submit" value="Update">
     </form>
     </div>

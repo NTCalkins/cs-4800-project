@@ -46,7 +46,8 @@ class RestaurantSignUpForm(UserCreationForm):
             zstring = '\n'.join(zc_codes)
 
             raise ValidationError(
-                _('We are sorry, our service is not available at your location.\nAvailable for these zipcodes:\n' + zstring)
+                _(
+                    'We are sorry, our service is not available at your location.\nAvailable for these zipcodes:\n' + zstring)
             )
         return zip
 
@@ -89,6 +90,12 @@ class CustomerUpdateForm(MultiModelForm):
         'user_account': UserForm,
         'customer_profile': CustomerProfileForm
     }
+
+
+class ReviewForm(ModelForm):
+    class Meta:
+        model = Review
+        fields = ['comment', 'timeliness', 'food_quality', 'make_public']
 
 
 class RestaurantUpdateForm(MultiModelForm):

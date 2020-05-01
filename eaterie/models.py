@@ -6,6 +6,8 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
+from django.db.models import Q
+from eaterie.validators import *
 from django.utils import timezone
 from datetime import datetime
 
@@ -157,6 +159,17 @@ class Restaurant(models.Model):
     def get_user(self):
         return self.user
 
+    def get_public_reviews(self):
+        return Review.objects.filter(
+            Q(order__restaurant=self),
+            Q(make_public=True)
+        )
+
+    def get_all_reviews(self):
+        return Review.objects.filter(
+            Q(order__restaurant=self)
+        )
+
     def get_orders(self):
         return Order.objects.filter(restaurant=self)
 
@@ -197,13 +210,11 @@ class Restaurant(models.Model):
     def get_food_quality(self):
         total_ratings = 0
         actual_ratings = 0
-        orders = Order.objects.filter(restaurant=self)
-        for o in orders:
-            ratings = Review.objects.filter(order=o).values()
-            for r in ratings:
-                actual_ratings += r['food_quality']
-                total_ratings += 1
-                # print(r)
+        ratings = self.get_public_reviews().values()
+        for r in ratings:
+            actual_ratings += r['food_quality']
+            total_ratings += 1
+            # print(r)
         if total_ratings == 0:
             return "No Ratings Yet"
         average = int(actual_ratings / total_ratings)
@@ -224,7 +235,7 @@ class Restaurant(models.Model):
         actual_ratings = 0
         orders = Order.objects.filter(restaurant=self)
         for o in orders:
-            ratings = Review.objects.filter(order=o).values()
+            ratings = self.get_public_reviews.values()
             for r in ratings:
                 actual_ratings += r['timeliness']
                 total_ratings += 1
@@ -578,14 +589,14 @@ class Cart(models.Model):
 class Review(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True)
     comment = models.TextField(max_length=512, blank=True)
-    food_quality = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], default=3)
-    timeliness = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], default=3)
-
-
+    food_quality = models.IntegerField(validators=[validate_ratings], default=3)
+    timeliness = models.IntegerField(validators=[validate_ratings], default=3)
+    make_public = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.food_quality) + "/5  food quality and " + str(self.timeliness) \
                + "/5 timeliness for " + str(self.order.get_restaurant())
+
 
     def get_order(self):
         return self.order

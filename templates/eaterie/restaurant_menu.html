@@ -6,6 +6,8 @@
 {% block content %}
 
 
+
+
     <div class="center" style="text-align: center">
         <img src="{{ restaurant.get_image_file.url }}" width="10%" alt="">
     </div>
@@ -36,6 +38,31 @@
                 </p>
                     This restaurant has cancelled {{ restaurant.get_cancelled_orders_percentage|floatformat }}% of their orders!
             </div>
+            <div id="accordion_reviews" role="tablist" style="margin-top: 20px">
+                <div class="card-header" role="tab" id="headingReview">
+                    <h5 class="mb-0">
+                        <a data-toggle="collapse" href="#collapse_reviews">
+                            Reviews
+                        </a>
+                    </h5>
+                </div>
+            <div id="collapse_reviews" class="collapse" role="tabpanel">
+                <div class="row">
+                    {% for review in restaurant.get_public_reviews %}
+                        <div class="containerReview">
+                            <div class="col-md-6">
+                                <img src = {{ review.get_order.get_customer.get_avatar.url }} style="width:90px">
+                                <p><span>{{ review.get_order.get_customer.get_user.first_name }}</span></p>
+                                <p>Comments: {{review.get_comment}}<br>
+                                    Food quality: {{ review.get_food_quality }}/5<br>
+                                    Timeliness: {{ review.get_timeliness }}/5</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
 
         </li>
 
@@ -112,9 +139,8 @@
                         </div>
                     </div>
                 {% endfor %}
-            </div>
-        </div>
-    </div>
+
+
 
 
 
