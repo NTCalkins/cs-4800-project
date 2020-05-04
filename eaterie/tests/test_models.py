@@ -37,3 +37,24 @@ class UserTest(TestCase):
 
         self.assertTrue(admin_user.is_staff)
         self.assertTrue(admin_user.is_superuser)
+
+
+class CustomerTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        User = get_user_model()
+        user = User.objects.create_user(
+            first_name="Test",
+            last_name="Testington",
+            password="I<3Testing123",
+            email="ttestington@cpp.edu",
+        )
+
+        Customer.objects.create(
+            user=user,
+            customer_address="13119 Sienna Court",
+            phone_number=8582544873,
+            preference_1='ITA',
+            preference_2='FF',
+            zip_code=92129
+        )
