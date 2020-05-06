@@ -13,9 +13,9 @@ class UserTest(TestCase):
             email="ttestington@cpp.edu",
         )
 
-        self.assertEqual(user.email, 'ttestington@cpp.edu')
-        self.assertEqual(user.first_name, "Test")
-        self.assertEqual(user.last_name, "Testington")
+        self.assertEqual(user.get_email(), 'ttestington@cpp.edu')
+        self.assertEqual(user.get_first_name(), "Test")
+        self.assertEqual(user.get_last_name(), "Testington")
 
         self.assertFalse(user.is_staff)
         self.assertFalse(user.is_superuser)
@@ -34,10 +34,11 @@ class UserTest(TestCase):
             email="ttestington@cpp.edu",
         )
 
-        self.assertEqual(admin_user.email, 'ttestington@cpp.edu')
-        self.assertEqual(admin_user.first_name, "Test")
-        self.assertEqual(admin_user.last_name, "Testington")
-        self.assertEqual(admin_user.email, "ttestington@cpp.edu")
+        self.assertEqual(admin_user.get_email(), 'ttestington@cpp.edu')
+        self.assertEqual(admin_user.get_first_name(), "Test")
+        self.assertEqual(admin_user.get_last_name(), "Testington")
+
+        self.assertEqual(admin_user.__str__(), "ttestington@cpp.edu")
 
         self.assertTrue(admin_user.is_staff)
         self.assertTrue(admin_user.is_superuser)
@@ -68,6 +69,47 @@ class CustomerTest(TestCase):
             zip_code=92129
         )
 
-    def test_labels(self):
+    def test_getters(self):
         customer = Customer.objects.get(id=1)
+        self.assertEqual(customer.user,customer.get_user())
+        self.assertEqual(customer.cart, customer.get_cart())
+        self.assertEqual(customer.__str__(), customer.user.email)
+        self.assertEqual(customer.customer_address, customer.get_address())
+        self.assertEqual(customer.user, customer.get_user())
+        self.assertEqual(customer.phone_number, customer.get_phone_number())
+        self.assertEqual(customer.preference_1, customer.get_preference1())
+        self.assertEqual(customer.preference_2, customer.get_preference2())
+        self.assertEqual(customer.zip_code, customer.get_zip_code())
+
+
+class LocationTest(TestCase):
+
+    def test_getters(self):
+
+        state = State.objects.create(
+            state_code="CA",
+            state_name="California"
+        )
+
+        city = City.objects.create(
+            city_name="Diamond Bar",
+            state_code=State.objects.get(state_code="CA")
+        )
+
+        zip_code = ZipCode.objects.create(
+            zip_code="91765",
+            city=city
+        )
+
+        self.assertEqual(state.get_code(), "CA")
+        self.assertEqual(state.get_name(), "California")
+        self.assertEqual(state.__str__(), "CA")
+
+        self.assertEqual(city.get_city_name(), "Diamond Bar")
+        self.assertEqual(city.get_state(), state)
+        self.assertEqual(city.__str__(), "Diamond Bar")
+
+        self.assertEqual(zip_code.get_zip(), "91765")
+        self.assertEqual(zip_code.get_zip_city_state(), "91765 Diamond Bar, California")
+        self.assertEqual(zip_code.__str__(), "91765")
 

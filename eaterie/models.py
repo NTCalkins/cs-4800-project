@@ -21,12 +21,6 @@ class CustomUserManager(BaseUserManager):
 
     use_in_migrations = True
 
-    def get_first_name(self):
-        return self.first_name
-
-    def get_last_name(self):
-        return self.last_name
-
     def create_user(self, email, password, **extra_fields):
         """
         Create and save a User with the given email and password.
@@ -47,10 +41,10 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
 
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError(_('Superuser must have is_staff=True.'))
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError(_('Superuser must have is_superuser=True.'))
+        # if extra_fields.get('is_staff') is not True:
+        #     raise ValueError(_('Superuser must have is_staff=True.'))
+        # if extra_fields.get('is_superuser') is not True:
+        #     raise ValueError(_('Superuser must have is_superuser=True.'))
         return self.create_user(email, password, **extra_fields)
 
 
@@ -87,6 +81,9 @@ class State(models.Model):
 
     def get_name(self):
         return self.state_name
+
+    def get_code(self):
+        return self.state_code
 
 
 class City(models.Model):
@@ -179,7 +176,8 @@ class Restaurant(models.Model):
         cancel_orders = orders.filter(order_cancelled=True).count()
         if cancel_orders == 0:
             return 0
-        return (cancel_orders / total_orders) * 100
+        else:
+            return (cancel_orders / total_orders) * 100
 
     def get_average_price(self):
         categories = MenuCategory.objects.filter(restaurant=self)
@@ -220,11 +218,11 @@ class Restaurant(models.Model):
         average = int(actual_ratings / total_ratings)
         if average == 1:
             return "★"
-        if average == 2:
+        elif average == 2:
             return "★★"
-        if average == 3:
+        elif average == 3:
             return "★★★"
-        if average == 4:
+        elif average == 4:
             return "★★★★"
         else:
             return "★★★★★"
@@ -245,11 +243,11 @@ class Restaurant(models.Model):
         average = int(actual_ratings / total_ratings)
         if average == 1:
             return "★"
-        if average == 2:
+        elif average == 2:
             return "★★"
-        if average == 3:
+        elif average == 3:
             return "★★★"
-        if average == 4:
+        elif average == 4:
             return "★★★★"
         else:
             return "★★★★★"
@@ -301,8 +299,7 @@ class Customer(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         user_cart, created = Cart.objects.get_or_create(customer=self)
-        if not created:
-            user_cart.save()
+        user_cart.save()
 
 
 class MenuCategory(models.Model):
