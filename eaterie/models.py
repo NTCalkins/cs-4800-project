@@ -233,7 +233,7 @@ class Restaurant(models.Model):
         actual_ratings = 0
         orders = Order.objects.filter(restaurant=self)
         for o in orders:
-            ratings = self.get_public_reviews.values()
+            ratings = self.get_public_reviews().values()
             for r in ratings:
                 actual_ratings += r['timeliness']
                 total_ratings += 1
@@ -368,7 +368,7 @@ class Order(models.Model):
         self.save()
 
     def get_order_items(self):
-        return OrderItem.objects.filter(order=self)
+        return OrderItem.objects.filter(order=self).order_by("order_date")
 
     def get_restaurant(self):
         return self.restaurant
