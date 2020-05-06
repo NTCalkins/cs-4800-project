@@ -370,6 +370,134 @@ class MenuItemTest(TestCase):
         self.assertEqual(menu_item.get_category(), self.category)
 
 
+class OrderAndOrderItemTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+
+        #Set up the location information for the restaurant
+        state = State.objects.create(
+            state_code="CA",
+            state_name="California"
+        )
+
+        city = City.objects.create(
+            city_name="Diamond Bar",
+            state_code=State.objects.get(state_code="CA")
+        )
+
+        zip_code = ZipCode.objects.create(
+            zip_code="91765",
+            city=city
+        )
+
+        #get the user that is the restaurant
+        User = get_user_model()
+        cls.user = User.objects.create_user(
+            first_name="Test",
+            last_name="Testington",
+            password="I<3Testing123",
+            email="ttestington@cpp.edu",
+        )
+
+        cls.user.is_restaurant = True
+
+        cls.restaurant = Restaurant.objects.create(
+            restaurant_name="McPomonas",
+            restaurant_address="23663 MeadCliff Place",
+            phone_number=8582544873,
+            description="Testing",
+            zip_code=zip_code,
+            user=cls.user,
+        )
+
+        category = MenuCategory.objects.create(
+            category_name="Burgers",
+            restaurant=cls.restaurant
+        )
+
+        fooditem = MenuItem.objects.create(
+            item_name="TestBurger",
+            description="Testing",
+            price=54.99,
+            category=category
+        )
+
+        customer_user = User.objects.create_user(
+            first_name="Terst",
+            last_name="Testingrton",
+            password="I<3Testing123",
+            email="ttestington@cprp.edu",
+        )
+
+        customer_user.is_customer = True
+
+        cls.cust = Customer.objects.create(
+            user=customer_user,
+            customer_address="13119 Sienna Court",
+            phone_number=1582544873,
+            preference_1='ITA',
+            preference_2='FF',
+            zip_code=91765
+        )
+
+        cls.order1 = Order.objects.create(
+            restaurant=cls.restaurant,
+            customer=cls.cust,
+            special_instruction="Special instructions for testing",
+        )
+
+        cls.order1item = OrderItem.objects.create(
+            menu_item=fooditem,
+            quantity=10,
+            order=cls.order1
+        )
+
+        order2 = Order.objects.create(
+            restaurant=cls.restaurant,
+            customer=cls.cust,
+            special_instruction="Second set of special instructions",
+        )
+
+        cls.review1 = Review.objects.create(
+            order=cls.order1,
+            comment="This is a public review",
+            food_quality=5,
+            timeliness=5,
+            make_public=True
+        )
+
+        review2 = Review.objects.create(
+            order=order2,
+            comment="This is a nonpublic review",
+            food_quality=1,
+            timeliness=1,
+        )
+
+    def test_getters_order(self):
+
+        order = Order.objects.get(id=1)
+
+        order.flip_cancelled()
+        self.assertEqual(order.is_cancelled(), True)
+
+        order.flip_fulfilled()
+        self.assertEqual(order.is_fulfilled(), True)
+
+        self.assertEqual(order.get_restaurant(), self.restaurant)
+
+        self.assertEqual(order.get_customer(),self.cust)
+
+        self.assertEqual(self.order1.order_date, order.get_order_date())
+
+        self.assertEqual(order.get_special_instruction(), "Special instructions for testing")
+
+        #TODO: get_order_items
+
+        self.assertEqual(order.get_total_cost(), Decimal('549.90'))
+
+        self.assertEqual(order.get_review(), self.review1)
+
+
 
 
 
