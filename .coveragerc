@@ -1,10 +1,19 @@
 [run]
-source = .
+source=
+    .
+branch= False
+
 plugins =
     django_coverage_plugin
-omit = */node_modules/*
+omit=
+    */node_modules/*
+    */venv/*
+    */migrations/*
+    */slinky/*
+    */templates/socialaccount/*
+
 
 [report]
 fail_under = 100
 show_missing = True
-skip_covered = True
+skip_covered = False

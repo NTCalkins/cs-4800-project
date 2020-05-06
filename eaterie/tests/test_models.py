@@ -16,10 +16,14 @@ class UserTest(TestCase):
         self.assertEqual(user.email, 'ttestington@cpp.edu')
         self.assertEqual(user.first_name, "Test")
         self.assertEqual(user.last_name, "Testington")
-        self.assertEqual(user.email, "ttestington@cpp.edu")
 
         self.assertFalse(user.is_staff)
         self.assertFalse(user.is_superuser)
+
+        self.assertEquals(user._meta.get_field('first_name').verbose_name, 'first name')
+        self.assertEquals(user._meta.get_field('last_name').verbose_name, 'last name')
+        self.assertEquals(user._meta.get_field('email').verbose_name, 'email address')
+        self.assertEquals(user._meta.get_field('password').verbose_name, 'password')
 
     def test_create_superuser(self):
         User = get_user_model()
@@ -37,6 +41,11 @@ class UserTest(TestCase):
 
         self.assertTrue(admin_user.is_staff)
         self.assertTrue(admin_user.is_superuser)
+
+        self.assertEquals(admin_user._meta.get_field('first_name').verbose_name, 'first name')
+        self.assertEquals(admin_user._meta.get_field('last_name').verbose_name, 'last name')
+        self.assertEquals(admin_user._meta.get_field('email').verbose_name, 'email address')
+        self.assertEquals(admin_user._meta.get_field('password').verbose_name, 'password')
 
 
 class CustomerTest(TestCase):
@@ -58,3 +67,7 @@ class CustomerTest(TestCase):
             preference_2='FF',
             zip_code=92129
         )
+
+    def test_labels(self):
+        customer = Customer.objects.get(id=1)
+

@@ -2,8 +2,3 @@ venv
 env
 .env
 frontend
-htmlcov/
-.coverage
-.coverage.*
-coverage.xml
-*.cover
