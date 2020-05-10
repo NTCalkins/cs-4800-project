@@ -368,7 +368,7 @@ class Order(models.Model):
         self.save()
 
     def get_order_items(self):
-        return OrderItem.objects.filter(order=self).order_by("order_date")
+        return OrderItem.objects.filter(order=self)
 
     def get_restaurant(self):
         return self.restaurant
