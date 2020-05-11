@@ -230,10 +230,12 @@ class RestaurantTest(TestCase):
         self.assertEqual(restaurant.get_zip_code(), ZipCode.objects.get(zip_code="91765"))
         self.assertEqual(restaurant.get_user(), self.user)
 
-        self.assertQuerysetEqual(restaurant.get_public_reviews(), Review.objects.filter(make_public=True))
-        self.assertQuerysetEqual(restaurant.get_all_reviews(), Review.objects.filter(order__restaurant=restaurant))
+        self.assertCountEqual(restaurant.get_public_reviews(), Review.objects.filter(make_public=True))
+        self.assertCountEqual(restaurant.get_all_reviews(), Review.objects.filter(order__restaurant=restaurant))
 
-        self.assertQuerysetEqual(restaurant.get_orders(), Order.objects.filter(restaurant=restaurant))
+        self.assertCountEqual(restaurant.get_orders(), Order.objects.filter(restaurant=restaurant))
+
+        self.assertCountEqual(restaurant.get_categories(),MenuCategory.objects.filter(restaurant=restaurant))
 
         self.assertEqual(restaurant.get_cancelled_orders_percentage(), 50)
 
@@ -301,7 +303,8 @@ class CategoryTest(TestCase):
         self.assertEqual(category.__str__(), "Burgers")
         self.assertEqual(category.get_category_name(), "Burgers")
         self.assertEqual(category.get_restaurant(), self.restaurant)
-        self.assertQuerysetEqual(category.get_menu_items(), MenuItem.objects.filter(category=category))
+
+        self.assertCountEqual(category.get_menu_items(), MenuItem.objects.filter(category=category))
 
 
 class MenuItemTest(TestCase):
@@ -489,9 +492,11 @@ class OrderAndOrderItemTest(TestCase):
 
         self.assertEqual(order.get_special_instruction(), "Special instructions for testing")
 
-        #TODO: get_order_items
+        self.assertCountEqual(order.get_order_items(), OrderItem.objects.filter(order=order))
 
         self.assertEqual(order.get_total_cost(), Decimal('549.90'))
+
+        self.assertEqual(order.__str__(), "Order from McPomonas")
 
         self.assertEqual(order.get_review(), self.review1)
 
