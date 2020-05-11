@@ -41,10 +41,10 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
 
-        # if extra_fields.get('is_staff') is not True:
-        #     raise ValueError(_('Superuser must have is_staff=True.'))
-        # if extra_fields.get('is_superuser') is not True:
-        #     raise ValueError(_('Superuser must have is_superuser=True.'))
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError(_('Superuser must have is_staff=True.'))
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError(_('Superuser must have is_superuser=True.'))
         return self.create_user(email, password, **extra_fields)
 
 
@@ -158,13 +158,13 @@ class Restaurant(models.Model):
 
     def get_public_reviews(self):
         return Review.objects.filter(
-            Q(order__restaurant=self),
-            Q(make_public=True)
+            order__restaurant=self,
+            make_public=True
         )
 
     def get_all_reviews(self):
         return Review.objects.filter(
-            Q(order__restaurant=self)
+            order__restaurant=self
         )
 
     def get_orders(self):
@@ -591,7 +591,7 @@ class Review(models.Model):
     make_public = models.BooleanField(default=False)
 
     def __str__(self):
-        return str(self.food_quality) + "/5  food quality and " + str(self.timeliness) \
+        return str(self.food_quality) + "/5 food quality and " + str(self.timeliness) \
                + "/5 timeliness for " + str(self.order.get_restaurant())
 
 
