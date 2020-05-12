@@ -22,11 +22,11 @@
     <div class="container w-75">
         {% if restaurants %}
             {% if request.GET.zip_code %}
-            <div class="h-auto card-deck">
+            <div class="h-auto card-columns" style="column-count: 2;">
                 {% for restaurant in restaurants %}
-                    <div class="w-25 h-25 card text-center">
+                    <div class="card">
                         <a href="{% url 'eaterie:restaurant_menu' restaurant.pk %}" class="list-group-item list-group-item-action list-group-item-light">
-                            <img src="{{ restaurant.get_image_file.url }}" class="card-img-top rounded mx-auto d-block" alt="Restaurant Image" style="width: 10rem;">
+                            <img src="{{ restaurant.get_image_file.url }}" class="card-img-top rounded mx-auto d-block" alt="Restaurant Image" style="width: 50%; height: 7em;">
                         <div class="card-body">
                             <h5 class="card-title" style="color: rgba(0, 0, 0, 1);">{{ restaurant.get_name }}</h5>
                             <p>{% if restaurant.get_address %}
