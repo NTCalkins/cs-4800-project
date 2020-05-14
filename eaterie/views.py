@@ -106,9 +106,6 @@ class AccountUpdateView(UpdateView):
         return reverse('eaterie:update_account', args=[str(self.request.user.id)])
 
 
-
-
-
 @method_decorator(login_required, name='dispatch')
 class MenuView(DetailView):
     model = Restaurant
@@ -119,6 +116,8 @@ class MenuView(DetailView):
         return reverse('eaterie:menu', args=[str(restaurant.id)])
 
     def post(self, request, *args, **kwargs):
+        print(request.POST.get('add_to_cart_button'))
+        print(request)
         if "Add to cart" == request.POST['add_to_cart_button']:
             menu_item_pk = request.POST['mipk']
             item_amount = int(request.POST['item_amount'])
