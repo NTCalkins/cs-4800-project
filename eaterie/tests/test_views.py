@@ -75,11 +75,12 @@ class TestCustomerHomeView(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class TestAccountUpdateView(UpdateView):
+class TestAccountUpdateView(TestCase):
 
-    def setup(self, request, *args, **kwargs):
+    def setup(self):
 
         #Set up the location information for the restaurant
+
         state = State.objects.create(
             state_code="CA",
             state_name="California"
@@ -140,10 +141,10 @@ class TestAccountUpdateView(UpdateView):
         response = AccountUpdateView.as_view()(request)
         self.assertEqual(response.status_code, 200)
 
-        print(response.get_form_kwargs())
-
         request = RequestFactory().post('/account/{pk}/update', kwargs={'pk' : self.user1.id})
         request.user = self.user1
         response = AccountUpdateView.as_view()(request)
+        response.get_form_kwargs()
+        request.get_form_kwargs()
         self.assertEqual(response.status_code, 200)
 
