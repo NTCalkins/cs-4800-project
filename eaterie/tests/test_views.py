@@ -77,10 +77,8 @@ class TestCustomerHomeView(TestCase):
 
 class TestAccountUpdateView(TestCase):
 
-    def setup(self):
-
-        #Set up the location information for the restaurant
-
+    @classmethod
+    def setUpTestData(cls):
         state = State.objects.create(
             state_code="CA",
             state_name="California"
@@ -97,17 +95,17 @@ class TestAccountUpdateView(TestCase):
         )
 
         User = get_user_model()
-        self.user1 = User.objects.create_user(
+        cls.user1 = User.objects.create_user(
             first_name="Test",
             last_name="Testington",
             password="I<3Testing123",
             email="ttestington@cpp.edu",
         )
 
-        self.user1.is_customer = True
+        cls.user1.is_customer = True
 
         Customer.objects.create(
-            user=self.user1,
+            user=cls.user1,
             customer_address="13119 Sienna Court",
             phone_number=8582544873,
             preference_1='ITA',
@@ -115,17 +113,17 @@ class TestAccountUpdateView(TestCase):
             zip_code=92129
         )
 
-        self.user2 = User.objects.create_user(
+        cls.user2 = User.objects.create_user(
             first_name="Tester",
             last_name="Testingtoner",
             password="I<3Testing1233",
             email="ttestington@cpep.edu",
         )
 
-        self.user2.is_restaurant = True
+        cls.user2.is_restaurant = True
 
         Restaurant.objects.create(
-            user=self.user2,
+            user=cls.user2,
             restaurant_name="McPomonas",
             restaurant_address="23663 MeadCliff Place",
             phone_number=8582545873,
@@ -134,15 +132,15 @@ class TestAccountUpdateView(TestCase):
 
         )
 
-    def customer_account_update_view(self):
+    def test_customer_account_update_view(self):
 
-        request = RequestFactory().get('/account/{pk}/update', kwargs={'pk' : self.user1.id})
+        request = RequestFactory().get('/account/{pk}/update', kwargs={'pk' : 1})
         request.user = self.user1
         response = AccountUpdateView.as_view()(request)
         self.assertEqual(response.status_code, 200)
 
-        request = RequestFactory().post('/account/{pk}/update', kwargs={'pk' : self.user1.id})
-        request.user = self.user1
+        request = RequestFactory().post('/account/{pk}/update', kwargs={'pk' : 2})
+        request.user = self.user2
         response = AccountUpdateView.as_view()(request)
         response.get_form_kwargs()
         request.get_form_kwargs()
