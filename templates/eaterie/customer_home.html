@@ -107,7 +107,7 @@
             <!--Suggestion: Restaurants near you-->
             <h4 class="d-flex justify-content-left" style="padding-top: 10px; color: #0057B8;">Some suggestions near you...</h4>
             <div class="h-auto card-deck">
-            {% for restaurant in restaurants|slice:":6" %}
+            {% for restaurant in restaurants|slice:":3" %}
                 <div class="w-25 h-25 card text-center">
                         <a href="{% url 'eaterie:restaurant_menu' restaurant.pk %}" class="list-group-item list-group-item-action list-group-item-light">
                             <img src="{{ restaurant.get_image_file.url }}" class="card-img-top rounded mx-auto d-block" alt="Restaurant Image" style="width: 10rem;">
