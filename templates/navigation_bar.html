@@ -50,14 +50,14 @@
                                             Your cart is empty!
                                         {% else %}
                                         {% for cart_entry in user.customer.get_cart.cartentry_set.all %}
-                                            <li class="nav-CartBody-li">
+                                            <div class="nav-CartBody-li", style="margin-bottom: 50px">
                                             <span class="nav-CartBody-img">
                                                 <img src="{{ cart_entry.get_menu_item.get_image_file.url }}" height="50", alt="Item img">
                                             </span>
                                             <span class="nav-CartBody-item-name">{{ cart_entry.get_menu_item.get_item_name }}</span>
                                             <span class="nav-CartBody-item-price">${{ cart_entry.get_menu_item.get_price }} ea.</span>
                                             <span class="nav-CartBody-item-quantity">Quantity: {{ cart_entry.get_quantity }}</span>
-                                            </li>
+                                            </div>
                                         {% endfor %}
                                         {% endif %}
                                     </div>
